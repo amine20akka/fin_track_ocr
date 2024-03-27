@@ -27,117 +27,138 @@ class _SignInState extends State<SignIn> {
         ? const SplashScreen()
         : Scaffold(
             backgroundColor: const Color.fromARGB(249, 238, 232, 232),
-            appBar: AppBar(
-              backgroundColor: const Color.fromARGB(255, 174, 9, 31),
-              elevation: 0.0,
-              actions: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width, // Largeur maximale
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/fintrack-ocr-favicon-black.png',
-                        width: 100,
-                        height: 50,
-                      ),
-                      const Text(
-                        'FinTrack OCR', 
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 100.0,
                   ),
-                ),
-              ],
-            ),
-            body: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 50.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                        decoration:
-                            textInputDecoration.copyWith(hintText: 'Email'),
-                        validator: (value) =>
-                            value!.isEmpty ? 'Enter an email' : null,
-                        onChanged: (val) {
-                          setState(() {
-                            email = val;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                        decoration:
-                            textInputDecoration.copyWith(hintText: 'Password'),
-                        validator: (value) => value!.length < 6
-                            ? 'Enter a password 6+ characters long'
-                            : null,
-                        obscureText: true,
-                        onChanged: (val) {
-                          password = val;
-                        },
-                      ),
-                      const SizedBox(height: 20.0),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 15, 65, 132),
-                        ),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              loading = true;
-                            });
-                            dynamic result = await _authService
-                                .signInWithEmailAndPassword(email, password);
-                            if (result == null) {
-                              setState(() {
-                                error =
-                                    'Could not sign in with those credentials !';
-                                loading = false;
-                              });
-                            }
-                          }
-                        },
-                        child: const Text(
-                          'Sign in',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Text('You don\'t have an account ?'),
-                          TextButton(
-                            onPressed: () {
-                              widget.toggleView();
-                            },
-                            child: Text(
-                              'Register',
-                              style: TextStyle(color: Colors.lightBlue[900]),
+                  Image.asset(
+                    'assets/fintrack-ocr-high-resolution-logo-transparent.png',
+                    width: 320.0,
+                  ),
+                  const SizedBox(
+                    height: 50.0,
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 50.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              decoration:
+                                  textInputDecoration.copyWith(hintText: 'Email'),
+                              validator: (value) =>
+                                  value!.isEmpty ? 'Enter an email' : null,
+                              onChanged: (val) {
+                                setState(() {
+                                  email = val;
+                                });
+                              },
                             ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Text(
-                        error,
-                        style: const TextStyle(
-                            color: Color.fromARGB(255, 174, 9, 31),
-                            fontSize: 14.0),
-                      ),
-                    ],
-                  ),
-                )),
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              decoration: textInputDecoration.copyWith(
+                                  hintText: 'Password'),
+                              obscureText: true,
+                              validator: (value) => value!.isEmpty
+                                  ? 'Please enter your password'
+                                  : null,
+                              onChanged: (val) {
+                                password = val;
+                              },
+                            ),
+                            const SizedBox(height: 10.0),
+                            Text(
+                              error,
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 174, 9, 31),
+                                  fontSize: 14.0),
+                            ),
+                            const SizedBox(height: 30.0),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 15, 65, 132),
+                              ),
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  dynamic result = await _authService
+                                      .signInWithEmailAndPassword(
+                                          email, password);
+                                  if (result == null) {
+                                    setState(() {
+                                      error =
+                                          'Verify your password or/and your email !';
+                                      loading = false;
+                                    });
+                                  }
+                                }
+                              },
+                              child: const Text(
+                                'Sign in',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20.0,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                const Text('You don\'t have an account ?'),
+                                TextButton(
+                                  onPressed: () {
+                                    widget.toggleView();
+                                  },
+                                  child: Text(
+                                    'Register',
+                                    style:
+                                        TextStyle(color: Colors.lightBlue[900]),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 1.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Divider(
+                                      thickness: 0.4,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  Text(
+                                    'Continue with',
+                                    style: TextStyle(
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Divider(
+                                      thickness: 0.4,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ),
           );
   }
 }
