@@ -1,6 +1,6 @@
 import 'package:fin_track_ocr/firebase_options.dart';
 import 'package:fin_track_ocr/pages/authenticate/authenticate.dart';
-import 'package:fin_track_ocr/pages/home.dart';
+// import 'package:fin_track_ocr/pages/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const Authentication(),
-        '/home': (context) => Home(),
+        // '/home': (context) => Home(u),
       },
       debugShowCheckedModeBanner: false,
     );

@@ -1,6 +1,6 @@
 import 'package:fin_track_ocr/pages/splash_screen.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
-import 'package:fin_track_ocr/shared/constants.dart';
+import 'package:fin_track_ocr/shared/input_decoration_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {

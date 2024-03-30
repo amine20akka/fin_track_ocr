@@ -24,14 +24,15 @@ class _AuthenticationState extends State<Authentication> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: _authService.user, // Utilisez le flux d'utilisateur de votre service d'authentification
+      stream: _authService
+          .user, // Utilisez le flux d'utilisateur de votre service d'authentification
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SplashScreen(); // Affichez le SplashScreen pendant que l'application vérifie l'état d'authentification
         } else {
           if (snapshot.hasData) {
-            // L'utilisateur est authentifié, renvoyez Home
-            return Home();
+            // L'utilisateur est authentifié, renvoyez Home avec l'uid
+            return Home(uid: snapshot.data!.uid);
           } else {
             if (showSignIn) {
               return SignIn(toggleView: toggleView);
