@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:fin_track_ocr/pages/splash_screen.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/input_decoration_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -27,6 +30,20 @@ class _RegisterState extends State<Register> {
   late String email;
   late String password;
   String error = '';
+  String? imageUrl; // Declaring imageUrl as nullable
+
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        imageUrl =
+            pickedFile.path; // Setting imageUrl to the path of the picked file
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +56,80 @@ class _RegisterState extends State<Register> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const SizedBox(
-                    height: 70.0,
+                    height: 50.0,
                   ),
                   Image.asset(
                     'assets/fintrack-ocr-high-resolution-logo-transparent.png',
                     width: 320.0,
                   ),
                   const SizedBox(
-                    height: 30.0,
+                    height: 20.0,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      getImage();
+                    },
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: imageUrl != null
+                              ? FileImage(File(imageUrl!))
+                              : const AssetImage(
+                                  'assets/default_profile_image.png',
+                                ) as ImageProvider,
+                        ),
+                        if (imageUrl != null)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  imageUrl = null; // Clear the imageUrl to remove the image
+                                });
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: const Icon(
+                                  Icons.cancel,
+                                  color: Color.fromARGB(255, 186, 38, 27),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              getImage();
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromARGB(255, 21, 21, 21),
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(
+                                Icons.add_a_photo_outlined,
+                                color: Color.fromARGB(255, 221, 215, 215),
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 10.0,
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -184,7 +267,7 @@ class _RegisterState extends State<Register> {
                                   final DatabaseService databaseService =
                                       DatabaseService(uid: user!.uid);
                                   await databaseService.updateUserData(
-                                      firstName, lastName);
+                                      firstName, lastName, imageUrl);
                                   widget.toggleView();
                                 } else {
                                   setState(() {

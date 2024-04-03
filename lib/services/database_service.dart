@@ -9,10 +9,12 @@ class DatabaseService {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Future updateUserData(String firstName, String lastName) async {
+  Future updateUserData(
+      String firstName, String lastName, String? profileImageUrl) async {
     return await userCollection.doc(uid).set({
       'firstName': firstName,
       'lastName': lastName,
+      'profileImageUrl': profileImageUrl,
     });
   }
 
@@ -32,6 +34,7 @@ class DatabaseService {
       firstName: data!['firstName'],
       lastName: data['lastName'],
       expenses: expenses,
+      profileImageUrl: data['profileImageUrl'], // Include profile image URL
     );
   }
 
@@ -45,7 +48,6 @@ class DatabaseService {
       'expenses': FieldValue.arrayUnion([expense.toMap()]),
     });
   }
-
 
   List<Expense> _expensesFromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;

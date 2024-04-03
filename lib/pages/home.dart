@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:fin_track_ocr/models/expense.dart';
+import 'package:fin_track_ocr/models/user.dart';
+import 'package:fin_track_ocr/pages/profile_pop_up_menu.dart';
 import 'package:fin_track_ocr/pages/splash_screen.dart';
-import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:fin_track_ocr/pages/add_expense_form.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +18,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late final DatabaseService _databaseService;
-  final AuthService _auth = AuthService();
 
   @override
   void initState() {
@@ -32,34 +34,45 @@ class _HomeState extends State<Home> {
         elevation: 0.0,
         actions: [
           SizedBox(
-            width: MediaQuery.of(context).size.width, // Largeur maximale
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/fintrack-ocr-favicon-black.png',
-                  width: 100,
-                  height: 50,
-                ),
-                const Text(
-                  'FinTrack OCR',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () async {
-                    await _auth.signOut();
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
-                  ),
-                  icon: const Icon(Icons.person),
-                  label: const Text('Logout'),
-                ),
-              ],
-            ),
-          ),
+              width: MediaQuery.of(context).size.width, // Largeur maximale
+              child: StreamBuilder<UserData>(
+                stream: DatabaseService(uid: widget.uid).userData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container();
+                  }
+                  if (snapshot.hasData) {
+                    // Extrayez l'imageUrl de UserData
+                    String? imageUrl = snapshot.data!.profileImageUrl;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image.asset(
+                          'assets/fintrack-ocr-favicon-black.png',
+                          width: 100,
+                          height: 50,
+                        ),
+                        const Text(
+                          'FinTrack OCR',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ProfilePopupMenu(profileImage: CircleAvatar(
+                            radius: 15,
+                            backgroundImage: imageUrl != null
+                                ? FileImage(File(imageUrl))
+                                : const AssetImage(
+                                    'assets/default_profile_image.png',
+                                  ) as ImageProvider,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return Container();
+                },
+              ))
         ],
       ),
       body: Padding(
@@ -102,7 +115,6 @@ class _HomeState extends State<Home> {
                                       '- ${product.name}, Quantity: ${product.quantity}, Price: \$${product.price.toStringAsFixed(2)}'),
                               ],
                             ),
-                            // Affichez d'autres détails de la dépense selon vos besoins
                           );
                         },
                       );
@@ -116,34 +128,11 @@ class _HomeState extends State<Home> {
               children: [
                 TextButton.icon(
                   onPressed: () {
-                    // Afficher le formulaire d'ajout de dépense manuellement dans une boîte de dialogue contextuelle (popup)
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Center(child: Text('Add an Expense')),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 20), // Ajoutez un padding personnalisé
-                        content: SizedBox(
-                          // Utilisez SizedBox pour définir une largeur maximale
-                          width: MediaQuery.of(context).size.width *
-                              0.95, // Vous pouvez ajuster le facteur 0.9 selon vos besoins
-                          child: SingleChildScrollView(
-                            child: AddExpenseForm(
-                                uid: widget
-                                    .uid), // Utilisez le formulaire d'ajout de dépense ici
-                          ),
-                        ),
-                        actions: [
-                          Center(
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ),
-                        ],
+                    // Naviguer vers un autre widget
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddExpenseForm(uid: widget.uid,),
                       ),
                     );
                   },
