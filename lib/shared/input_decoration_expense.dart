@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const expenseInputDecoration = InputDecoration(
   contentPadding: EdgeInsets.all(10.0),
-  fillColor: Color.fromARGB(255, 188, 193, 228),
+  fillColor: Color.fromARGB(255, 196, 208, 225),
   filled: true,
   enabledBorder: OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.elliptical(8.0, 8.0)),

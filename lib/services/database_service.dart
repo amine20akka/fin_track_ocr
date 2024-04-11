@@ -9,12 +9,13 @@ class DatabaseService {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Future updateUserData(
-      String firstName, String lastName, String? profileImageUrl) async {
+  Future createUser(String firstName, String lastName, String? profileImageUrl, double budget) async {
     return await userCollection.doc(uid).set({
       'firstName': firstName,
       'lastName': lastName,
       'profileImageUrl': profileImageUrl,
+      'budget': budget,
+      'expenses': [],
     });
   }
 
@@ -34,7 +35,8 @@ class DatabaseService {
       firstName: data!['firstName'],
       lastName: data['lastName'],
       expenses: expenses,
-      profileImageUrl: data['profileImageUrl'], // Include profile image URL
+      profileImageUrl: data['profileImageUrl'],
+      budget: data['budget'] ?? 0,
     );
   }
 
@@ -42,7 +44,6 @@ class DatabaseService {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
 
-  // Méthode pour ajouter une dépense à l'utilisateur
   Future<void> addExpense(Expense expense) async {
     await userCollection.doc(uid).update({
       'expenses': FieldValue.arrayUnion([expense.toMap()]),

@@ -31,6 +31,7 @@ class _RegisterState extends State<Register> {
   late String password;
   String error = '';
   String? imageUrl; // Declaring imageUrl as nullable
+  double budget = 0;
 
   final picker = ImagePicker();
 
@@ -86,7 +87,8 @@ class _RegisterState extends State<Register> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  imageUrl = null; // Clear the imageUrl to remove the image
+                                  imageUrl =
+                                      null; // Clear the imageUrl to remove the image
                                 });
                               },
                               child: Container(
@@ -127,7 +129,6 @@ class _RegisterState extends State<Register> {
                       ],
                     ),
                   ),
-
                   const SizedBox(
                     height: 10.0,
                   ),
@@ -246,6 +247,23 @@ class _RegisterState extends State<Register> {
                             },
                             obscureText: passwordVisible,
                           ),
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            decoration: textInputDecoration
+                                .copyWith(hintText: 'Monthly Budget')
+                                .copyWith(
+                                    prefixIcon:
+                                        const Icon(Icons.monetization_on_outlined))
+                                .copyWith(
+                                    suffixText: 'TND'),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                budget = double.tryParse(value) ??
+                                    0; // If parsing fails, set budget to 0
+                              });
+                            },
+                          ),
                           const SizedBox(height: 40.0),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -266,8 +284,8 @@ class _RegisterState extends State<Register> {
                                       FirebaseAuth.instance.currentUser;
                                   final DatabaseService databaseService =
                                       DatabaseService(uid: user!.uid);
-                                  await databaseService.updateUserData(
-                                      firstName, lastName, imageUrl);
+                                  await databaseService.createUser(
+                                      firstName, lastName, imageUrl, budget);
                                   widget.toggleView();
                                 } else {
                                   setState(() {
