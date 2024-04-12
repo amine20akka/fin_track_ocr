@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/product.dart';
-import 'package:fin_track_ocr/models/user.dart';
-import 'package:fin_track_ocr/pages/profile_pop_up_menu.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
+import 'package:fin_track_ocr/shared/linear_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:fin_track_ocr/shared/input_decoration_expense.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class ProductListTile extends StatefulWidget {
@@ -39,7 +37,8 @@ class ProductListTileState extends State<ProductListTile> {
                 value!.isEmpty ? 'Please enter the name of the product' : null,
             controller: widget.productController,
             decoration:
-                expenseInputDecoration.copyWith(labelText: 'Name of product'),
+                expenseInputDecoration.copyWith(labelText: 'Name of product')
+                                      .copyWith(prefixIcon: const Icon(Icons.production_quantity_limits)),
           ),
           TextFormField(
             validator: (value) =>
@@ -48,33 +47,43 @@ class ProductListTileState extends State<ProductListTile> {
             decoration: expenseInputDecoration.copyWith(
               labelText: 'Price',
               suffixText: 'TND',
-            ),
+            ).copyWith(prefixIcon: const Icon(Icons.attach_money)),
             keyboardType: TextInputType.number,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Quantity :   '),
-              IconButton(
-                onPressed: () => _decrementQuantity(),
-                icon: const Icon(Icons.remove),
+          const SizedBox(height: 1.5,),
+          Center(
+            child: Container(
+              width: 230.0,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                color: Color.fromARGB(255, 196, 208, 225),
               ),
-              Text(widget.quantityController.text),
-              IconButton(
-                onPressed: () => _incrementQuantity(),
-                icon: const Icon(Icons.add),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Quantity :   '),
+                  IconButton(
+                    onPressed: () => _decrementQuantity(),
+                    icon: const Icon(Icons.remove),
+                  ),
+                  Text(widget.quantityController.text),
+                  IconButton(
+                    onPressed: () => _incrementQuantity(),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           const SizedBox(
-            height: 80.0,
+            height: 50.0,
           ),
         ],
       ),
       trailing: IconButton(
         icon: const Icon(Icons.remove_circle_outline),
         onPressed: widget.onRemove,
-        color: const Color.fromARGB(255, 143, 6, 6),
+        color: const Color.fromARGB(255, 169, 7, 7),
         highlightColor: const Color.fromARGB(255, 227, 7, 7),
       ),
     );
@@ -156,7 +165,6 @@ class AddExpenseFormState extends State<AddExpenseForm> {
 
   @override
   Widget build(BuildContext context) {
-    String? imageUrl;
     return Scaffold(
       backgroundColor: const Color.fromARGB(249, 238, 232, 232),
       body: SingleChildScrollView(
@@ -168,94 +176,77 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                   bottomLeft: Radius.circular(25),
                   bottomRight: Radius.circular(25),
                 ),
-                color: Color.fromARGB(255, 2, 71, 95),
+                gradient: myLinearGradient,
               ),
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/fintrack-ocr-favicon-white.png',
-                    width: 70,
-                    height: 40,
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+              child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Expense',
+                            style: GoogleFonts.poly(
+                              color: Colors.grey[200],
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                          Icon(
+                            color: Colors.grey[200],
+                            Icons.receipt_long_outlined,
+                          ),
+                        ]
+                      ),
                   ),
-                  const Text(
-                    'FinTrack',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  StreamBuilder<UserData>(
-                    stream: DatabaseService(uid: widget.uid).userData,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container();
-                      }
-                      if (snapshot.hasData) {
-                        // Extract the imageUrl from UserData
-                        imageUrl = snapshot.data!.profileImageUrl;
-                      }
-                      return ProfilePopupMenu(
-                        profileImage: CircleAvatar(
-                          radius: 16,
-                          backgroundImage: imageUrl != null
-                              ? FileImage(File(imageUrl!))
-                              : const AssetImage(
-                                  'assets/default_profile_image.png',
-                                ) as ImageProvider,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
             ),
+            const SizedBox(height: 40.0,),
             Center(
               child: Form(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 50.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Add an Expense',
-                              style: TextStyle(
-                                fontSize: 28.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 20.0,
-                            ),
-                            Icon(
-                              Icons.receipt_long_outlined,
-                            ),
-                          ]),
-                    ),
                     for (int i = 0; i < _productControllers.length; i++)
                       ProductListTile(
-                        key: Key(
-                            '$i'), // Utilisation de l'index comme clé unique
+                        key: Key('$i'),
                         productController: _productControllers[i],
                         priceController: _priceControllers[i],
                         quantityController: _quantityControllers[i],
                         onRemove: () => _removeProductField(i),
                       ),
                     Center(
-                      child: TextButton.icon(
-                        onPressed: _addProductField,
-                        icon: const Icon(Icons.add_circle_outline),
-                        label: const Text('Add a product'),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          color: Color.fromARGB(255, 196, 208, 225),
+                        ),
+                        child: IconButton(
+                          iconSize: 30.0,
+                          onPressed: _addProductField,
+                          icon: const Icon(Icons.add),
+                          color: Colors.grey[800],
+                        ),
+                      )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(9.0),
+                      child: Center(
+                        child: Text(
+                          'Add a product',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800],
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(
-                      height: 20.0,
+                      height: 80.0,
                     ),
                     const Divider(
                       indent: 50.0,
@@ -264,13 +255,15 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                       color: Color.fromARGB(31, 36, 36, 36),
                     ),
                     const SizedBox(
-                      height: 50.0,
+                      height: 20.0,
                     ),
                     ListTile(
                       title: TextFormField(
                         controller: _dateController,
                         decoration: const InputDecoration(
-                            labelText: 'Date of the expense'),
+                            labelText: 'Date of the expense',
+                            prefixIcon: Icon(Icons.date_range), 
+                            ),
                         onTap: () async {
                           final DateTime? picked = await showDatePicker(
                             context: context,
@@ -290,7 +283,10 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                     ListTile(
                       title: TextFormField(
                         controller: _sellerController,
-                        decoration: const InputDecoration(labelText: 'Seller'),
+                        decoration: const InputDecoration(
+                          labelText: 'Seller',
+                          prefixIcon: Icon(Icons.sell_outlined),
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -303,13 +299,19 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            icon: const Icon(Icons.arrow_back_ios),
-                            label: const Text('Back to home'),
+                            icon: Icon(Icons.arrow_back, color: Colors.grey[800],),
+                            label: Text(
+                              'Back to home',
+                              style: TextStyle(
+                                color: Colors.grey[800],
+                              ),
+                            ),
                           ),
                           ElevatedButton(
                             style: const ButtonStyle(
                               backgroundColor: MaterialStatePropertyAll<Color>(
-                                  Color.fromARGB(255, 9, 62, 112)),
+                                  Color.fromARGB(255, 4, 103, 136),
+                              ),
                               foregroundColor:
                                   MaterialStatePropertyAll<Color>(Colors.white),
                             ),
@@ -378,7 +380,9 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                               child: Text('Add'),
                             ),
                           ),
-                        ]),
+                        ]
+                      ),
+                      const SizedBox(height: 30.0,),
                   ],
                 ),
               ),
