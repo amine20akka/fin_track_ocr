@@ -30,7 +30,7 @@ class _RegisterState extends State<Register> {
   late String email;
   late String password;
   String error = '';
-  String? imageUrl; // Declaring imageUrl as nullable
+  String? imageUrl;
   double budget = 0;
 
   final picker = ImagePicker();
@@ -41,7 +41,7 @@ class _RegisterState extends State<Register> {
     setState(() {
       if (pickedFile != null) {
         imageUrl =
-            pickedFile.path; // Setting imageUrl to the path of the picked file
+            pickedFile.path;
       }
     });
   }

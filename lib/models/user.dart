@@ -4,9 +4,9 @@ class UserData {
   final String uid;
   final String firstName;
   final String lastName;
-  final String? profileImageUrl;
+  String? profileImageUrl;
   final List<Expense> expenses;
-  final double budget; // New budget property
+  final double budget;
 
   UserData({
     required this.uid,
@@ -14,6 +14,6 @@ class UserData {
     required this.lastName,
     this.profileImageUrl,
     List<Expense>? expenses,
-    required this.budget, // Include budget in constructor parameters
+    required this.budget,
   }) : expenses = expenses ?? [];
 }

@@ -16,7 +16,7 @@ class BudgetProgress extends StatelessWidget {
 
     Color progressColor;
 
-    if (percentageSpent >= 100) {
+    if (percentageSpent >= 90) {
       progressColor = const Color.fromARGB(255, 191, 10, 10);
     } else if (percentageSpent >= 70) {
       progressColor = const Color.fromARGB(255, 177, 118, 8);

@@ -67,4 +67,19 @@ class DatabaseService {
   Stream<List<Expense>> get userExpenses {
     return userCollection.doc(uid).snapshots().map(_expensesFromSnapshot);
   }
+
+  Future<void> updateProfileImageUrl(String? profileImageUrl) async {
+    await userCollection.doc(uid).update({
+      'profileImageUrl': profileImageUrl,
+    });
+  }
+
+  Future<void> updateUserData(String firstName, String lastName, double budget) async {
+    await userCollection.doc(uid).update({
+      'firstName': firstName,
+      'lastName': lastName,
+      'budget': budget, 
+    });
+  }
+
 }

@@ -104,6 +104,7 @@ class _HomeState extends State<Home> {
                                           'assets/default_profile_image.png',
                                         ) as ImageProvider,
                                 ),
+                                uid: widget.uid,
                               ),
                             ],
                           ),
@@ -239,7 +240,7 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Naviguer vers un autre widget
           Navigator.push(
@@ -254,11 +255,11 @@ class _HomeState extends State<Home> {
         backgroundColor: const Color.fromARGB(255, 4, 103, 136),
         elevation: 5.0,
         tooltip: 'Add an expense',
-        label: const Text(
-          'Add an expense',
-          style: TextStyle(color: Colors.white),
-        ),
-        icon: const Icon(
+        // label: const Text(
+        //   'Add',
+        //   style: TextStyle(color: Colors.white),
+        // ),
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
