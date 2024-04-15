@@ -26,7 +26,7 @@ class AuthService {
         return null; // User is not signed in
       }
     } catch (e) {
-      print('Error getting user email: $e');
+      debugPrint('debug: ${e.toString()}');
       return null;
     }
   }

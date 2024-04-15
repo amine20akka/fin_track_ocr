@@ -274,7 +274,7 @@ class _HomeState extends State<Home> {
             ),
           );
         },
-        backgroundColor: const Color.fromARGB(255, 54, 167, 204),
+        backgroundColor: const Color.fromARGB(255, 4, 108, 142),
         elevation: 5.0,
         tooltip: 'Add an expense',
         // label: const Text(

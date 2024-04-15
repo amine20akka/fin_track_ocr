@@ -26,19 +26,29 @@ class _SignInState extends State<SignIn> {
     return loading
         ? const SplashScreen()
         : Scaffold(
-            backgroundColor: const Color.fromARGB(249, 238, 232, 232),
+            backgroundColor: const Color.fromARGB(248, 243, 239, 239),
             body: SingleChildScrollView(
               child: Column(
                 children: [
                   const SizedBox(
-                    height: 100.0,
+                    height: 50.0,
                   ),
                   Image.asset(
                     'assets/fintrack-ocr-high-resolution-logo-transparent.png',
                     width: 320.0,
                   ),
                   const SizedBox(
-                    height: 50.0,
+                    height: 20.0,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(40.0),
+                    child: Image.asset(
+                      'assets/Budget.jpg',
+                      width: 350.0,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20.0,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(
@@ -127,32 +137,6 @@ class _SignInState extends State<SignIn> {
                               ],
                             ),
                             const SizedBox(height: 20.0),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 1.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Divider(
-                                      thickness: 0.4,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                  Text(
-                                    'Continue with',
-                                    style: TextStyle(
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Divider(
-                                      thickness: 0.4,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
                           ],
                         ),
                       )),
