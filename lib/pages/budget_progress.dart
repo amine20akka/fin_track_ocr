@@ -21,19 +21,19 @@ class BudgetProgress extends StatelessWidget {
     } else if (percentageSpent >= 70) {
       progressColor = const Color.fromARGB(255, 177, 118, 8);
     } else {
-      progressColor = const Color.fromARGB(255, 4, 136, 180);
+      progressColor = const Color.fromARGB(255, 54, 167, 204);
     }
 
 
     return CircularPercentIndicator(
       animation: true,
-      animationDuration: 800,
+      animationDuration: 1200,
       radius: 110,
       percent: percentageSpent >= 100 ? 1.0 : percentageSpent / 100,
       progressColor: progressColor,
       lineWidth: 20.0,
       center: Text(
-        '${budget - totalExpenses} TND',
+        '${(budget - totalExpenses).toStringAsFixed(2)} TND',
         style: GoogleFonts.gabriela(
           letterSpacing: 1.5,
           fontSize: 20.0,

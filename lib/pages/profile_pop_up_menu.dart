@@ -45,8 +45,8 @@ class _ProfilePopupMenuState extends State<ProfilePopupMenu> {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
-              await _authService.signOut();
               Navigator.pop(context);
+              await _authService.signOut();
             },
           ),
         ),

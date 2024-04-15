@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/user.dart';
 import 'package:fin_track_ocr/pages/budget_progress.dart';
+import 'package:fin_track_ocr/pages/drawer.dart';
 import 'package:fin_track_ocr/pages/profile_pop_up_menu.dart';
 import 'package:fin_track_ocr/pages/add_expense_form.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
@@ -52,7 +53,7 @@ class _HomeState extends State<Home> {
                     if (expenses.isNotEmpty) {
                       for (Expense exp in expenses) {
                         totalAmountAllExpenses += exp.totalAmount;
-                      } 
+                      }
                     }
 
                     return Container(
@@ -72,7 +73,9 @@ class _HomeState extends State<Home> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
                                 icon: const Icon(Icons.menu_outlined),
                                 color: Colors.white,
                                 iconSize: 30.0,
@@ -142,8 +145,7 @@ class _HomeState extends State<Home> {
                             padding: const EdgeInsets.only(top: 30.0),
                             child: BudgetProgress(
                                 budget: snapshot.data!.budget,
-                                totalExpenses: totalAmountAllExpenses
-                              ),
+                                totalExpenses: totalAmountAllExpenses),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -167,74 +169,79 @@ class _HomeState extends State<Home> {
               const SizedBox(
                 height: 20,
               ),
-              StreamBuilder<List<Expense>>(
-                stream: _databaseService.userExpenses,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: SpinKitFoldingCube(
-                        color: Color.fromARGB(255, 15, 64, 129),
-                        size: 35.0,
-                      ),
-                    );
-                  } else {
-                    if (snapshot.hasError) {
-                      return const Placeholder();
+              Expanded(
+                child: StreamBuilder<List<Expense>>(
+                  stream: _databaseService.userExpenses,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: SpinKitFoldingCube(
+                          color: Color.fromARGB(255, 15, 64, 129),
+                          size: 35.0,
+                        ),
+                      );
                     } else {
-                      final expenses = snapshot.data ?? [];
-                      if (expenses.isEmpty) {
-                        // Afficher un message lorsque la liste des dépenses est vide
-                        return const Center(
-                            child: Text('No Transactions yet !'));
+                      if (snapshot.hasError) {
+                        return Container();
                       } else {
-                        // Renvoyer une colonne contenant chaque dépense
-                        return Column(
-                          children: expenses.map((expense) {
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 5.0,
-                                horizontal: 10.0,
-                              ),
-                              elevation: 2.0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Total Amount: ${expense.totalAmount.toStringAsFixed(3)} TND',
-                                    ),
-                                    Text('Seller: ${expense.seller ?? 'Unknown'}'),
-                                    Text(
-                                      'Date: ${expense.date != null ? DateFormat('yyyy-MM-dd').format(expense.date!) : 'Unknown'}',
-                                    ),
-                                    const SizedBox(height: 5.0),
-                                    const Text(
-                                      'Products:',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5.0),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: expense.products.map((product) {
-                                        return Text(
-                                          '- ${product.name}, Quantity: ${product.quantity}, Price: ${product.price.toStringAsFixed(2)} TND',
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ],
+                        final expenses = snapshot.data ?? [];
+                        if (expenses.isEmpty) {
+                          // Afficher un message lorsque la liste des dépenses est vide
+                          return const Center(
+                              child: Text('No Transactions yet !'));
+                        } else {
+                          // Renvoyer une colonne contenant chaque dépense
+                          return ListView.builder(
+                            itemCount: expenses.length,
+                            itemBuilder: (context, index) {
+                              final expense = expenses[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 5.0,
+                                  horizontal: 10.0,
                                 ),
-                              ),
-                            );
-                          }).toList(),
-                        );
+                                elevation: 2.0,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Total Amount: ${expense.totalAmount.toStringAsFixed(3)} TND',
+                                      ),
+                                      Text(
+                                          'Seller: ${expense.seller ?? 'Unknown'}'),
+                                      Text(
+                                        'Date: ${expense.date != null ? DateFormat('yyyy-MM-dd').format(expense.date!) : 'Unknown'}',
+                                      ),
+                                      const SizedBox(height: 5.0),
+                                      const Text(
+                                        'Products:',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5.0),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: expense.products.map((product) {
+                                          return Text(
+                                            '- ${product.name}, Quantity: ${product.quantity}, Price: ${product.price.toStringAsFixed(2)} TND',
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
                       }
                     }
-                  }
-                },
+                  },
+                ),
               ),
             ],
           ),
@@ -242,17 +249,32 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Naviguer vers un autre widget
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => AddExpenseForm(
-                uid: widget.uid,
-              ),
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 500),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.ease;
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return AddExpenseForm(
+                  uid: widget.uid,
+                );
+              },
             ),
           );
         },
-        backgroundColor: const Color.fromARGB(255, 4, 103, 136),
+        backgroundColor: const Color.fromARGB(255, 54, 167, 204),
         elevation: 5.0,
         tooltip: 'Add an expense',
         // label: const Text(
@@ -264,6 +286,7 @@ class _HomeState extends State<Home> {
           color: Colors.white,
         ),
       ),
+      drawer: MyDrawer(uid: widget.uid),
     );
   }
 }

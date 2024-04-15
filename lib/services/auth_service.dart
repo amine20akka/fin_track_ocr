@@ -16,6 +16,21 @@ class AuthService {
     });
   }
 
+  Future<String?> getUserEmail() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        user = _auth.currentUser; // Get the updated user data
+        return user!.email;
+      } else {
+        return null; // User is not signed in
+      }
+    } catch (e) {
+      print('Error getting user email: $e');
+      return null;
+    }
+  }
+
   // sign in with email & password
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
