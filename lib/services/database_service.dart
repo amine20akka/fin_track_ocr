@@ -82,4 +82,20 @@ class DatabaseService {
     });
   }
 
+  Future<void> deleteExpense(String expenseId) async {
+    // Récupérer les données utilisateur actuelles
+    DocumentSnapshot userSnapshot = await userCollection.doc(uid).get();
+    if (userSnapshot.exists) {
+      // Récupérer la liste des dépenses
+      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+      List<dynamic> expenses = userData?['expenses'] ?? [];
+      // Filtrer la liste pour exclure l'élément avec l'ID spécifié
+      expenses.removeWhere((expense) => expense['id'] == expenseId);
+      // Mettre à jour les données utilisateur avec la nouvelle liste de dépenses
+      await userCollection.doc(uid).update({'expenses': expenses});
+    }
+  }
+
+
+
 }

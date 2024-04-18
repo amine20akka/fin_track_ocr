@@ -8,7 +8,9 @@ import 'package:fin_track_ocr/pages/profile_pop_up_menu.dart';
 import 'package:fin_track_ocr/pages/add_expense_form.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -166,9 +168,61 @@ class _HomeState extends State<Home> {
                   return Container();
                 },
               ),
-              const SizedBox(
-                height: 20,
+              const SizedBox(height: 15.0,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Divider(
+                      indent: 20.0,
+                      thickness: 0.3,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(width: 10.0,),
+                  const Icon(Icons.access_time_filled),
+                  const SizedBox(width: 5.0,),
+                  Text(
+                    'Recent Transactions',
+                    style: GoogleFonts.poly(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                  const SizedBox(width: 10.0,),
+                  Expanded(
+                    child: Divider(
+                      endIndent: 20.0,
+                      thickness: 0.3,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  // const Expanded(
+                  //   child: TextField(
+                  //     decoration: InputDecoration(
+                  //       fillColor: Color.fromARGB(255, 202, 202, 202),
+                  //       filled: true,
+                  //       hintText: 'Search',
+                  //       enabledBorder: OutlineInputBorder(
+                  //         borderRadius:
+                  //             BorderRadius.all(Radius.elliptical(30.0, 30.0)),
+                  //         borderSide: BorderSide(
+                  //             color: Color.fromARGB(255, 215, 215, 215),
+                  //             width: 1.0),
+                  //       ),
+                  //     contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  //     ),
+                  //   ),
+                  // ),
+                  // IconButton(
+                  //   onPressed: () {
+                  //     // Action lorsque l'icône est cliquée
+                  //   },
+                  //   icon: const Icon(Icons.search),
+                  // ),
+                ],
               ),
+              const SizedBox(height: 15.0,),
               Expanded(
                 child: StreamBuilder<List<Expense>>(
                   stream: _databaseService.userExpenses,
@@ -187,55 +241,112 @@ class _HomeState extends State<Home> {
                         final expenses = snapshot.data ?? [];
                         if (expenses.isEmpty) {
                           // Afficher un message lorsque la liste des dépenses est vide
-                          return const Center(
-                              child: Text('No Transactions yet !'));
-                        } else {
-                          // Renvoyer une colonne contenant chaque dépense
-                          return ListView.builder(
-                            itemCount: expenses.length,
-                            itemBuilder: (context, index) {
-                              final expense = expenses[index];
-                              return Card(
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 5.0,
-                                  horizontal: 10.0,
-                                ),
-                                elevation: 2.0,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Total Amount: ${expense.totalAmount.toStringAsFixed(3)} TND',
-                                      ),
-                                      Text(
-                                          'Seller: ${expense.seller ?? 'Unknown'}'),
-                                      Text(
-                                        'Date: ${expense.date != null ? DateFormat('yyyy-MM-dd').format(expense.date!) : 'Unknown'}',
-                                      ),
-                                      const SizedBox(height: 5.0),
-                                      const Text(
-                                        'Products:',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5.0),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: expense.products.map((product) {
-                                          return Text(
-                                            '- ${product.name}, Quantity: ${product.quantity}, Price: ${product.price.toStringAsFixed(2)} TND',
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ],
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'No Transactions yet !',
+                                  style: GoogleFonts.poly(
+                                    fontSize: 24.0,
                                   ),
                                 ),
-                              );
-                            },
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            transitionDuration: const Duration(milliseconds: 500),
+                                            transitionsBuilder:
+                                                (context, animation, secondaryAnimation, child) {
+                                              const begin = Offset(1.0, 0.0);
+                                              const end = Offset.zero;
+                                              const curve = Curves.ease;
+                                              var tween = Tween(begin: begin, end: end)
+                                                  .chain(CurveTween(curve: curve));
+                                              var offsetAnimation = animation.drive(tween);
+                                              return SlideTransition(
+                                                position: offsetAnimation,
+                                                child: child,
+                                              );
+                                            },
+                                            pageBuilder: (context, animation, secondaryAnimation) {
+                                              return AddExpenseForm(
+                                                uid: widget.uid,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      }, 
+                                      child: Text('Add one here ...', style: TextStyle(fontSize: 20.0, color: Colors.blue[900], fontWeight: FontWeight.w400),),
+                                    ),
+                                    Icon(Icons.receipt_long_outlined, color: Colors.blue[900]),
+                                  ],
+                                )
+                              ]
+                            );
+                        } else {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List.generate(expenses.length, (index) {
+                                final expense = expenses[expenses.length - 1 - index];
+                                return Card(
+                                  margin: const EdgeInsets.fromLTRB(20.0, 5.0, 0.0, 0.0),
+                                  elevation: 4.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.monetization_on),
+                                            Text(
+                                              '  ${expense.totalAmount.toStringAsFixed(2)} TND',
+                                              style: GoogleFonts.gabriela(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children:
+                                              expense.products.map((product) {
+                                            return Text(
+                                              '- ${product.name} x${product.quantity}\n  Unit: ${product.price.toStringAsFixed(2)} TND',
+                                            );
+                                          }).toList(),
+                                        ),
+                                        Text(
+                                          'SELLER: ${expense.seller ?? 'Unknown'}',
+                                        ),
+                                        Text(
+                                          'DATE: ${expense.date != null ? DateFormat('yyyy-MM-dd').format(expense.date!) : 'Unknown'}',
+                                        ),
+                                        IconButton(
+                                          highlightColor: const Color.fromARGB(255, 191, 10, 10),
+                                          color: const Color.fromARGB(255, 191, 10, 10),
+                                          iconSize: 30.0,
+                                          onPressed: () {
+                                            _databaseService.deleteExpense(expense.id);
+                                          }, 
+                                          icon: const Icon(Icons.cancel_outlined),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
                           );
                         }
                       }
@@ -243,6 +354,7 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ),
+              const SizedBox(height: 80.0,),
             ],
           ),
         ],
