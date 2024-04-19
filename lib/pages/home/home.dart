@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/user.dart';
-import 'package:fin_track_ocr/pages/budget_progress.dart';
-import 'package:fin_track_ocr/pages/drawer.dart';
-import 'package:fin_track_ocr/pages/profile_pop_up_menu.dart';
-import 'package:fin_track_ocr/pages/add_expense_form.dart';
-import 'package:fin_track_ocr/pages/transactions_list.dart';
+import 'package:fin_track_ocr/pages/home/budget_progress.dart';
+import 'package:fin_track_ocr/pages/home/drawer.dart';
+import 'package:fin_track_ocr/pages/home/profile_pop_up_menu.dart';
+import 'package:fin_track_ocr/pages/add_expense/add_expense_form.dart';
+import 'package:fin_track_ocr/pages/home/transactions_list.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
 import 'package:flutter/material.dart';

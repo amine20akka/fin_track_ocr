@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:fin_track_ocr/models/user.dart';
-import 'package:fin_track_ocr/pages/authenticate/authenticate.dart';
-import 'package:fin_track_ocr/pages/view_profile.dart';
+import 'package:fin_track_ocr/authentication/authenticate.dart';
+import 'package:fin_track_ocr/pages/Profile/view_profile.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';

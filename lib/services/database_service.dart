@@ -9,7 +9,8 @@ class DatabaseService {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Future createUser(String firstName, String lastName, String? profileImageUrl, double budget) async {
+  Future createUser(String firstName, String lastName, String? profileImageUrl,
+      double budget) async {
     return await userCollection.doc(uid).set({
       'firstName': firstName,
       'lastName': lastName,
@@ -74,11 +75,12 @@ class DatabaseService {
     });
   }
 
-  Future<void> updateUserData(String firstName, String lastName, double budget) async {
+  Future<void> updateUserData(
+      String firstName, String lastName, double budget) async {
     await userCollection.doc(uid).update({
       'firstName': firstName,
       'lastName': lastName,
-      'budget': budget, 
+      'budget': budget,
     });
   }
 
@@ -87,7 +89,8 @@ class DatabaseService {
     DocumentSnapshot userSnapshot = await userCollection.doc(uid).get();
     if (userSnapshot.exists) {
       // Récupérer la liste des dépenses
-      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? userData =
+          userSnapshot.data() as Map<String, dynamic>?;
       List<dynamic> expenses = userData?['expenses'] ?? [];
       // Filtrer la liste pour exclure l'élément avec l'ID spécifié
       expenses.removeWhere((expense) => expense['id'] == expenseId);
@@ -96,6 +99,21 @@ class DatabaseService {
     }
   }
 
+  Future<void> updateExpense(Expense expense) async {
+    // Convertir l'objet Expense en une carte de données Firestore
+    Map<String, dynamic> expenseData = {
+      'totalAmount': expense.totalAmount,
+      'products': expense.products.map((product) => product.toMap()).toList(),
+      'seller': expense.seller,
+      'date': expense.date,
+    };
 
+    // Mettre à jour la dépense dans la base de données Firestore
+    await userCollection
+        .doc(uid)
+        .collection('expenses')
+        .doc(expense.id)
+        .update(expenseData);
+  }
 
 }

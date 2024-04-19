@@ -121,7 +121,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
   void initState() {
     super.initState();
     _databaseService = DatabaseService(uid: widget.uid);
-    _addProductField(); // Ajoutez un champ de produit initial
+    _addProductField();
   }
 
   // final _formKey = GlobalKey<FormState>();
@@ -186,7 +186,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Expense',
+                            'Add Expense',
                             style: GoogleFonts.poly(
                               color: Colors.grey[200],
                               fontSize: 28.0,
@@ -261,7 +261,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                       title: TextFormField(
                         controller: _dateController,
                         decoration: const InputDecoration(
-                            labelText: 'Date of the expense',
+                            labelText: 'Date of the expense (Optional)',
                             prefixIcon: Icon(Icons.date_range), 
                             ),
                         onTap: () async {
@@ -284,7 +284,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                       title: TextFormField(
                         controller: _sellerController,
                         decoration: const InputDecoration(
-                          labelText: 'Seller',
+                          labelText: 'Seller (Optional)',
                           prefixIcon: Icon(Icons.sell_outlined),
                         ),
                       ),
@@ -301,7 +301,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                             },
                             icon: Icon(Icons.arrow_back, color: Colors.grey[800],),
                             label: Text(
-                              'Back to home',
+                              'Back Home',
                               style: TextStyle(
                                 color: Colors.grey[800],
                               ),
@@ -428,6 +428,6 @@ class AddExpenseFormState extends State<AddExpenseForm> {
     _quantityControllers.clear();
     _dateController.clear();
     _sellerController.clear();
-    _addProductField(); // Ajouter un nouveau champ de produit initial
+    _addProductField();
   }
 }

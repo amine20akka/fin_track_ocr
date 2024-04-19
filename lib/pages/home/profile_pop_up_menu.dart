@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fin_track_ocr/pages/view_profile.dart';
+import 'package:fin_track_ocr/pages/Profile/view_profile.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,5 @@
-import 'package:fin_track_ocr/firebase_options.dart';
-import 'package:fin_track_ocr/pages/authenticate/authenticate.dart';
+import 'package:fin_track_ocr/services/firebase_options.dart';
+import 'package:fin_track_ocr/authentication/authenticate.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

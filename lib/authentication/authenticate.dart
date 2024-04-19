@@ -1,7 +1,7 @@
-import 'package:fin_track_ocr/pages/authenticate/register.dart';
-import 'package:fin_track_ocr/pages/authenticate/sign_in.dart';
-import 'package:fin_track_ocr/pages/home.dart';
-import 'package:fin_track_ocr/pages/splash_screen.dart';
+import 'package:fin_track_ocr/authentication/register.dart';
+import 'package:fin_track_ocr/authentication/sign_in.dart';
+import 'package:fin_track_ocr/pages/home/home.dart';
+import 'package:fin_track_ocr/pages/splash_screen/splash_screen.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
