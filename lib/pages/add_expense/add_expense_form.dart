@@ -2,8 +2,10 @@ import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/product.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fin_track_ocr/shared/input_decoration_expense.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -124,7 +126,6 @@ class AddExpenseFormState extends State<AddExpenseForm> {
     _addProductField();
   }
 
-  // final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _productControllers = [];
   final List<TextEditingController> _priceControllers = [];
   final List<TextEditingController> _quantityControllers = [];
@@ -167,8 +168,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(249, 238, 232, 232),
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           children: [
             Container(
               decoration: const BoxDecoration(
@@ -204,192 +204,193 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                       ),
                   ),
             ),
-            const SizedBox(height: 40.0,),
-            Center(
-              child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (int i = 0; i < _productControllers.length; i++)
-                      ProductListTile(
-                        key: Key('$i'),
-                        productController: _productControllers[i],
-                        priceController: _priceControllers[i],
-                        quantityController: _quantityControllers[i],
-                        onRemove: () => _removeProductField(i),
-                      ),
-                    Center(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          color: Color.fromARGB(255, 196, 208, 225),
-                        ),
-                        child: IconButton(
-                          iconSize: 30.0,
-                          onPressed: _addProductField,
-                          icon: const Icon(Icons.add),
-                          color: Colors.grey[800],
-                        ),
-                      )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(9.0),
-                      child: Center(
-                        child: Text(
-                          'Add a product',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
+            const SizedBox(height: 20.0,),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Form(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (int i = 0; i < _productControllers.length; i++)
+                          ProductListTile(
+                            key: Key('$i'),
+                            productController: _productControllers[i],
+                            priceController: _priceControllers[i],
+                            quantityController: _quantityControllers[i],
+                            onRemove: () => _removeProductField(i),
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 80.0,
-                    ),
-                    const Divider(
-                      indent: 50.0,
-                      endIndent: 50.0,
-                      thickness: 1.5,
-                      color: Color.fromARGB(31, 36, 36, 36),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    ListTile(
-                      title: TextFormField(
-                        controller: _dateController,
-                        decoration: const InputDecoration(
-                            labelText: 'Date of the expense (Optional)',
-                            prefixIcon: Icon(Icons.date_range), 
+                        Center(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                              color: Color.fromARGB(255, 196, 208, 225),
                             ),
-                        onTap: () async {
-                          final DateTime? picked = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2015, 8),
-                            lastDate: DateTime.now(),
-                          );
-                          if (picked != null) {
-                            setState(() {
-                              _dateController.text =
-                                  DateFormat('yyyy-MM-dd').format(picked);
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: TextFormField(
-                        controller: _sellerController,
-                        decoration: const InputDecoration(
-                          labelText: 'Seller (Optional)',
-                          prefixIcon: Icon(Icons.sell_outlined),
+                            child: IconButton(
+                              iconSize: 30.0,
+                              onPressed: _addProductField,
+                              icon: const Icon(Icons.add),
+                              color: Colors.grey[800],
+                            ),
+                          )
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 60.0,
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          TextButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.arrow_back, color: Colors.grey[800],),
-                            label: Text(
-                              'Back Home',
+                        Padding(
+                          padding: const EdgeInsets.all(9.0),
+                          child: Center(
+                            child: Text(
+                              'Add a product',
                               style: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.grey[800],
                               ),
                             ),
                           ),
-                          ElevatedButton(
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(
-                                  Color.fromARGB(255, 4, 103, 136),
-                              ),
-                              foregroundColor:
-                                  MaterialStatePropertyAll<Color>(Colors.white),
-                            ),
-                            onPressed: () {
-                              // Submit form data
-                              List<Map<String, dynamic>> productsData = [];
-                              for (int i = 0;
-                                  i < _productControllers.length;
-                                  i++) {
-                                String productName =
-                                    _productControllers[i].text;
-                                double price = double.tryParse(
-                                        _priceControllers[i].text) ??
-                                    0.0;
-                                int quantity = int.tryParse(
-                                        _quantityControllers[i].text) ??
-                                    0;
-                                productsData.add({
-                                  'productName': productName,
-                                  'price': price,
-                                  'quantity': quantity,
+                        ),
+                        const SizedBox(
+                          height: 80.0,
+                        ),
+                        const Divider(
+                          indent: 50.0,
+                          endIndent: 50.0,
+                          thickness: 1.5,
+                          color: Color.fromARGB(31, 36, 36, 36),
+                        ),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        ListTile(
+                          title: TextFormField(
+                            controller: _dateController,
+                            decoration: const InputDecoration(
+                                labelText: 'Date of the expense (Optional)',
+                                prefixIcon: Icon(Icons.date_range), 
+                                ),
+                            onTap: () async {
+                              final DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2015, 8),
+                                lastDate: DateTime.now(),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  _dateController.text =
+                                      DateFormat('yyyy-MM-dd').format(picked);
                                 });
                               }
-
-                              String date = _dateController.text;
-                              String seller = _sellerController.text;
-
-                              // Création d'une instance de Expense
-                              Expense newExpense = Expense(
-                                id: Expense.generateUniqueId(),
-                                totalAmount: calculateTotalAmount(productsData),
-                                products: createProductList(productsData),
-                                seller: seller.isNotEmpty ? seller : null,
-                                date: DateTime.parse(
-                                    date), // Assurez-vous que la date est au bon format
-                              );
-
-                              // Mettre à jour les dépenses de l'utilisateur authentifié
-                              _databaseService.addExpense(newExpense);
-
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Success'),
-                                    content: const Text(
-                                        'The expense has been added successfully !'),
-                                    actions: [
-                                      Center(
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // Ferme la fenêtre contextuelle
-                                            _resetForm(); // Réinitialise le formulaire
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text('Add'),
+                          ),
+                        ),
+                        ListTile(
+                          title: TextFormField(
+                            controller: _sellerController,
+                            decoration: const InputDecoration(
+                              labelText: 'Seller (Optional)',
+                              prefixIcon: Icon(Icons.sell_outlined),
                             ),
                           ),
-                        ]
-                      ),
-                      const SizedBox(height: 30.0,),
-                  ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+                children: [
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.grey[800],
+                ),
+                label: Text(
+                  'Back Home',
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromARGB(255, 4, 103, 136),
+                  ),
+                  foregroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                ),
+                onPressed: () {
+                  // Submit form data
+                  List<Map<String, dynamic>> productsData = [];
+                  for (int i = 0; i < _productControllers.length; i++) {
+                    String productName = _productControllers[i].text;
+                    double price =
+                        double.tryParse(_priceControllers[i].text) ?? 0.0;
+                    int quantity =
+                        int.tryParse(_quantityControllers[i].text) ?? 0;
+                    productsData.add({
+                      'productName': productName,
+                      'price': price,
+                      'quantity': quantity,
+                    });
+                  }
+              
+                  String date = _dateController.text;
+                  String seller = _sellerController.text;
+              
+                  DateTime? parsedDate;
+                  if (date.isNotEmpty) {
+                    parsedDate = DateTime.parse(date);
+                  }
+              
+                  Expense newExpense = Expense(
+                    id: Expense.generateUniqueId(),
+                    totalAmount: calculateTotalAmount(productsData),
+                    products: createProductList(productsData),
+                    seller: seller.isNotEmpty ? seller : null,
+                    date: parsedDate,
+                  );
+              
+                  // Mettre à jour les dépenses de l'utilisateur authentifié
+                  _databaseService.addExpense(newExpense);
+              
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Success'),
+                        content: const Text(
+                            'The expense has been added successfully !'),
+                        actions: [
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(); // Ferme la fenêtre contextuelle
+                                _resetForm(); // Réinitialise le formulaire
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text('Add'),
+                ),
+              ),
+                        ]),
+            ),
           ],
         ),
-      ),
     );
   }
 

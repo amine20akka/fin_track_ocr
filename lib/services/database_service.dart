@@ -99,21 +99,25 @@ class DatabaseService {
     }
   }
 
-  Future<void> updateExpense(Expense expense) async {
-    // Convertir l'objet Expense en une carte de données Firestore
-    Map<String, dynamic> expenseData = {
-      'totalAmount': expense.totalAmount,
-      'products': expense.products.map((product) => product.toMap()).toList(),
-      'seller': expense.seller,
-      'date': expense.date,
-    };
+  Future<void> updateExpense(Expense updatedExpense) async {
+  // Récupérer les données utilisateur actuelles
+  DocumentSnapshot userSnapshot = await userCollection.doc(uid).get();
+  if (userSnapshot.exists) {
+    // Récupérer la liste des dépenses
+    Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+    List<dynamic> expenses = userData?['expenses'] ?? [];
 
-    // Mettre à jour la dépense dans la base de données Firestore
-    await userCollection
-        .doc(uid)
-        .collection('expenses')
-        .doc(expense.id)
-        .update(expenseData);
+    // Trouver l'index de la dépense à mettre à jour
+    int index = expenses.indexWhere((expense) => expense['id'] == updatedExpense.id);
+    
+    if (index != -1) {
+      // Remplacer l'ancienne dépense par la nouvelle dépense
+      expenses[index] = updatedExpense.toMap();
+
+      // Mettre à jour les données utilisateur avec la nouvelle liste de dépenses
+      await userCollection.doc(uid).update({'expenses': expenses});
+    }
   }
+}
 
 }

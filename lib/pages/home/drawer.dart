@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fin_track_ocr/models/user.dart';
 import 'package:fin_track_ocr/authentication/authenticate.dart';
 import 'package:fin_track_ocr/pages/Profile/view_profile.dart';
+import 'package:fin_track_ocr/pages/home/transactions_history.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
@@ -72,7 +73,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.person),
-                        title: const Text('My Profile', style: TextStyle(fontWeight: FontWeight.bold),),
+                        title: const Text('My profile', style: TextStyle(fontWeight: FontWeight.bold),),
                         onTap: () {
                           Navigator.pop(context);
                           Navigator.push(
@@ -81,6 +82,39 @@ class _MyDrawerState extends State<MyDrawer> {
                               builder: (context) => ViewProfile(
                                 uid: widget.uid,
                               ),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.history),
+                        title: const Text(
+                          'Transactions history',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration:
+                                  const Duration(milliseconds: 500),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                const begin = Offset(1.0, 0.0);
+                                const end = Offset.zero;
+                                const curve = Curves.ease;
+                                var tween = Tween(begin: begin, end: end)
+                                    .chain(CurveTween(curve: curve));
+                                var offsetAnimation = animation.drive(tween);
+                                return SlideTransition(
+                                  position: offsetAnimation,
+                                  child: child,
+                                );
+                              },
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return TransactionsHistory(uid: widget.uid,);
+                              },
                             ),
                           );
                         },
@@ -119,7 +153,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           );
                         },
                       ),
-                      const SizedBox(height: 480.0,),
+                      const SizedBox(height: 420.0,),
                       const Divider(
                         thickness: 1.0,
                         indent: 2.0,

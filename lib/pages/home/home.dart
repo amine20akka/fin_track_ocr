@@ -187,29 +187,6 @@ class _HomeState extends State<Home> {
                       color: Colors.grey[700],
                     ),
                   ),
-                  // const Expanded(
-                  //   child: TextField(
-                  //     decoration: InputDecoration(
-                  //       fillColor: Color.fromARGB(255, 202, 202, 202),
-                  //       filled: true,
-                  //       hintText: 'Search',
-                  //       enabledBorder: OutlineInputBorder(
-                  //         borderRadius:
-                  //             BorderRadius.all(Radius.elliptical(30.0, 30.0)),
-                  //         borderSide: BorderSide(
-                  //             color: Color.fromARGB(255, 215, 215, 215),
-                  //             width: 1.0),
-                  //       ),
-                  //     contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                  //     ),
-                  //   ),
-                  // ),
-                  // IconButton(
-                  //   onPressed: () {
-                  //     // Action lorsque l'icône est cliquée
-                  //   },
-                  //   icon: const Icon(Icons.search),
-                  // ),
                 ],
               ),
               const SizedBox(height: 20.0,),
@@ -249,10 +226,6 @@ class _HomeState extends State<Home> {
         backgroundColor: const Color.fromARGB(255, 4, 108, 142),
         elevation: 5.0,
         tooltip: 'Add an expense',
-        // label: const Text(
-        //   'Add',
-        //   style: TextStyle(color: Colors.white),
-        // ),
         child: const Icon(
           Icons.add,
           color: Colors.white,

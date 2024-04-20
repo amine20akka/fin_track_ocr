@@ -9,6 +9,7 @@ const expenseInputDecoration = InputDecoration(
     borderSide: BorderSide(color: Color.fromARGB(249, 238, 232, 232), width: 1.0),
   ),
   focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.elliptical(8.0, 8.0)),
     borderSide: BorderSide(color: Color.fromARGB(255, 4, 22, 58), width: 1.0),
   ),
 );

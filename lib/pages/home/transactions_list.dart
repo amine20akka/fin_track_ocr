@@ -1,7 +1,7 @@
 import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/product.dart';
 import 'package:fin_track_ocr/pages/add_expense/add_expense_form.dart';
-import 'package:fin_track_ocr/pages/home/edit_expense.dart';
+import 'package:fin_track_ocr/pages/edit_expense/edit_expense.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -113,11 +113,11 @@ class _TransactionsListState extends State<TransactionsList> {
                           expense.products.take(3).toList();
 
                       return Card(
-                        margin: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+                        margin: const EdgeInsets.fromLTRB(20.0, 0.0, 10.0, 0.0),
                         elevation: 4.0,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 25.0, vertical: 10.0),
+                              horizontal: 20.0, vertical: 10.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -219,7 +219,7 @@ class _TransactionsListState extends State<TransactionsList> {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   IconButton(
                                     tooltip: 'Edit',
@@ -263,8 +263,7 @@ class _TransactionsListState extends State<TransactionsList> {
                                         const Color.fromARGB(255, 191, 10, 10),
                                     iconSize: 26.0,
                                     onPressed: () {
-                                      _databaseService
-                                          .deleteExpense(expense.id);
+                                      _databaseService.deleteExpense(expense.id);
                                     },
                                     icon: const Icon(
                                       Icons.cancel_outlined,
