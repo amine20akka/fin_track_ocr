@@ -65,6 +65,50 @@ class DatabaseService {
     return expenses;
   }
 
+  Stream<List<Expense>> getExpensesForCurrentMonth() {
+    // Obtenez le premier jour du mois actuel
+    DateTime firstDayOfMonth =
+        DateTime(DateTime.now().year, DateTime.now().month, 1);
+
+    // Obtenez le premier jour du mois suivant
+    DateTime firstDayOfNextMonth =
+        DateTime(DateTime.now().year, DateTime.now().month + 1, 1);
+
+    return userCollection.doc(uid).snapshots().map((userSnapshot) {
+      if (userSnapshot.exists) {
+        // Récupérer les données utilisateur
+        Map<String, dynamic> userData =
+            userSnapshot.data() as Map<String, dynamic>;
+
+        // Récupérer les dépenses de l'utilisateur
+        List<dynamic>? expensesData = userData['expenses'];
+
+        // Si les données des dépenses existent, les filtrer pour le mois en cours
+        if (expensesData != null) {
+          List<Expense> expenses = expensesData
+              .map((expenseMap) {
+                Expense expense = Expense.fromMap(expenseMap);
+                // Vérifier si la date de la dépense est dans le mois en cours
+                if (expense.date != null &&
+                    expense.date!.isAfter(firstDayOfMonth.subtract(const Duration(days: 1))) &&
+                    expense.date!.isBefore(firstDayOfNextMonth)) {
+                  return expense;
+                } else {
+                  return null;
+                }
+              })
+              .where((expense) => expense != null)
+              .toList()
+              .cast<
+                  Expense>(); // Supprimer les éléments null et caster la liste à Expense
+          return expenses;
+        }
+      }
+      return <Expense>[]; // Retourner une liste vide si aucune dépense n'est trouvée
+    });
+  }
+
+
   Stream<List<Expense>> get userExpenses {
     return userCollection.doc(uid).snapshots().map(_expensesFromSnapshot);
   }

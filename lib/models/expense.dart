@@ -13,7 +13,7 @@ class Expense {
     required this.totalAmount,
     required this.products,
     this.seller,
-    this.date,
+    required this.date,
   });
 
   // Constructeur nommé pour créer une instance à partir d'une carte de données Firebase

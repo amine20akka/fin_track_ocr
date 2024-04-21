@@ -2,10 +2,8 @@ import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/product.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fin_track_ocr/shared/input_decoration_expense.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -38,32 +36,40 @@ class ProductListTileState extends State<ProductListTile> {
             validator: (value) =>
                 value!.isEmpty ? 'Please enter the name of the product' : null,
             controller: widget.productController,
-            decoration:
-                expenseInputDecoration.copyWith(labelText: 'Name of product')
-                                      .copyWith(prefixIcon: const Icon(Icons.production_quantity_limits)),
+            decoration: expenseInputDecoration
+                .copyWith(labelText: 'Name of product')
+                .copyWith(
+                    prefixIcon: const Icon(Icons.production_quantity_limits)),
           ),
           TextFormField(
             validator: (value) =>
                 value!.isEmpty ? 'Please enter the price of the product' : null,
             controller: widget.priceController,
-            decoration: expenseInputDecoration.copyWith(
-              labelText: 'Price',
-              suffixText: 'TND',
-            ).copyWith(prefixIcon: const Icon(Icons.attach_money)),
+            decoration: expenseInputDecoration
+                .copyWith(
+                  labelText: 'Price',
+                  suffixText: 'TND',
+                )
+                .copyWith(prefixIcon: const Icon(Icons.attach_money)),
             keyboardType: TextInputType.number,
           ),
-          const SizedBox(height: 1.5,),
-          Center(
-            child: Container(
-              width: 230.0,
+          const SizedBox(
+            height: 1.5,
+          ),
+          Container(
+              width: 310.0,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 color: Color.fromARGB(255, 196, 208, 225),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Text('Quantity :   '),
+                  const SizedBox(width: 13.0,),
+                  const Icon(Icons.shopify),
+                  const SizedBox(width: 12.0,),
+                  const Text('Quantity:'),
+                  const SizedBox(width: 30.0,),
                   IconButton(
                     onPressed: () => _decrementQuantity(),
                     icon: const Icon(Icons.remove),
@@ -76,7 +82,6 @@ class ProductListTileState extends State<ProductListTile> {
                 ],
               ),
             ),
-          ),
           const SizedBox(
             height: 50.0,
           ),
@@ -118,6 +123,7 @@ class AddExpenseForm extends StatefulWidget {
 
 class AddExpenseFormState extends State<AddExpenseForm> {
   late final DatabaseService _databaseService;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -169,228 +175,234 @@ class AddExpenseFormState extends State<AddExpenseForm> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(249, 238, 232, 232),
       body: Column(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                ),
-                gradient: myLinearGradient,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
               ),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-              child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Add Expense',
-                            style: GoogleFonts.poly(
-                              color: Colors.grey[200],
-                              fontSize: 28.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Icon(
-                            color: Colors.grey[200],
-                            Icons.receipt_long_outlined,
-                          ),
-                        ]
-                      ),
-                  ),
+              gradient: myLinearGradient,
             ),
-            const SizedBox(height: 20.0,),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Center(
-                  child: Form(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (int i = 0; i < _productControllers.length; i++)
-                          ProductListTile(
-                            key: Key('$i'),
-                            productController: _productControllers[i],
-                            priceController: _priceControllers[i],
-                            quantityController: _quantityControllers[i],
-                            onRemove: () => _removeProductField(i),
-                          ),
-                        Center(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+            child: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(
+                  'Add Expense',
+                  style: GoogleFonts.poly(
+                    color: Colors.grey[200],
+                    fontSize: 28.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  width: 20.0,
+                ),
+                Icon(
+                  color: Colors.grey[200],
+                  Icons.receipt_long_outlined,
+                ),
+              ]),
+            ),
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Center(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (int i = 0; i < _productControllers.length; i++)
+                        ProductListTile(
+                          key: Key('$i'),
+                          productController: _productControllers[i],
+                          priceController: _priceControllers[i],
+                          quantityController: _quantityControllers[i],
+                          onRemove: () => _removeProductField(i),
+                        ),
+                      Center(
                           child: Container(
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                              color: Color.fromARGB(255, 196, 208, 225),
-                            ),
-                            child: IconButton(
-                              iconSize: 30.0,
-                              onPressed: _addProductField,
-                              icon: const Icon(Icons.add),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          color: Color.fromARGB(255, 196, 208, 225),
+                        ),
+                        child: IconButton(
+                          iconSize: 30.0,
+                          onPressed: _addProductField,
+                          icon: const Icon(Icons.add),
+                          color: Colors.grey[800],
+                        ),
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(9.0),
+                        child: Center(
+                          child: Text(
+                            'Add a product',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
                               color: Colors.grey[800],
                             ),
-                          )
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(9.0),
-                          child: Center(
-                            child: Text(
-                              'Add a product',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                            ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 80.0,
+                      ),
+                      const SizedBox(
+                        height: 80.0,
+                      ),
+                      const Divider(
+                        indent: 50.0,
+                        endIndent: 50.0,
+                        thickness: 1.5,
+                        color: Color.fromARGB(31, 36, 36, 36),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      ListTile(
+                        title: TextFormField(
+                          validator: (value) => value!.isEmpty
+                              ? 'Please choose the date of the expense'
+                              : null,
+                          controller: _dateController,
+                          decoration: const InputDecoration(
+                            labelText: 'Date of the expense',
+                            prefixIcon: Icon(Icons.date_range),
+                          ),
+                          onTap: () async {
+                            final DateTime? picked = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2015, 8),
+                              lastDate: DateTime.now(),
+                            );
+                            if (picked != null) {
+                              setState(() {
+                                _dateController.text =
+                                    DateFormat('MMMM dd, yyyy').format(picked);
+                              });
+                            }
+                          },
                         ),
-                        const Divider(
-                          indent: 50.0,
-                          endIndent: 50.0,
-                          thickness: 1.5,
-                          color: Color.fromARGB(31, 36, 36, 36),
-                        ),
-                        const SizedBox(
-                          height: 20.0,
-                        ),
-                        ListTile(
-                          title: TextFormField(
-                            controller: _dateController,
-                            decoration: const InputDecoration(
-                                labelText: 'Date of the expense (Optional)',
-                                prefixIcon: Icon(Icons.date_range), 
-                                ),
-                            onTap: () async {
-                              final DateTime? picked = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2015, 8),
-                                lastDate: DateTime.now(),
-                              );
-                              if (picked != null) {
-                                setState(() {
-                                  _dateController.text =
-                                      DateFormat('yyyy-MM-dd').format(picked);
-                                });
-                              }
-                            },
+                      ),
+                      ListTile(
+                        title: TextFormField(
+                          controller: _sellerController,
+                          decoration: const InputDecoration(
+                            labelText: 'Seller (Optional)',
+                            prefixIcon: Icon(Icons.sell_outlined),
                           ),
                         ),
-                        ListTile(
-                          title: TextFormField(
-                            controller: _sellerController,
-                            decoration: const InputDecoration(
-                              labelText: 'Seller (Optional)',
-                              prefixIcon: Icon(Icons.sell_outlined),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.grey[800],
+                    ),
+                    label: Text(
+                      'Back Home',
+                      style: TextStyle(
+                        color: Colors.grey[800],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-                children: [
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.grey[800],
-                ),
-                label: Text(
-                  'Back Home',
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll<Color>(
-                    Color.fromARGB(255, 4, 103, 136),
-                  ),
-                  foregroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                ),
-                onPressed: () {
-                  // Submit form data
-                  List<Map<String, dynamic>> productsData = [];
-                  for (int i = 0; i < _productControllers.length; i++) {
-                    String productName = _productControllers[i].text;
-                    double price =
-                        double.tryParse(_priceControllers[i].text) ?? 0.0;
-                    int quantity =
-                        int.tryParse(_quantityControllers[i].text) ?? 0;
-                    productsData.add({
-                      'productName': productName,
-                      'price': price,
-                      'quantity': quantity,
-                    });
-                  }
-              
-                  String date = _dateController.text;
-                  String seller = _sellerController.text;
-              
-                  DateTime? parsedDate;
-                  if (date.isNotEmpty) {
-                    parsedDate = DateTime.parse(date);
-                  }
-              
-                  Expense newExpense = Expense(
-                    id: Expense.generateUniqueId(),
-                    totalAmount: calculateTotalAmount(productsData),
-                    products: createProductList(productsData),
-                    seller: seller.isNotEmpty ? seller : null,
-                    date: parsedDate,
-                  );
-              
-                  // Mettre à jour les dépenses de l'utilisateur authentifié
-                  _databaseService.addExpense(newExpense);
-              
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Success'),
-                        content: const Text(
-                            'The expense has been added successfully !'),
-                        actions: [
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pop(); // Ferme la fenêtre contextuelle
-                                _resetForm(); // Réinitialise le formulaire
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ),
-                        ],
-                      );
+                  ElevatedButton(
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                        Color.fromARGB(255, 4, 103, 136),
+                      ),
+                      foregroundColor:
+                          MaterialStatePropertyAll<Color>(Colors.white),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Submit form data
+                        List<Map<String, dynamic>> productsData = [];
+                        for (int i = 0; i < _productControllers.length; i++) {
+                          String productName = _productControllers[i].text;
+                          double price =
+                              double.tryParse(_priceControllers[i].text) ?? 0.0;
+                          int quantity =
+                              int.tryParse(_quantityControllers[i].text) ?? 0;
+                          productsData.add({
+                            'productName': productName,
+                            'price': price,
+                            'quantity': quantity,
+                          });
+                        }
+
+                        String date = _dateController.text;
+                        String seller = _sellerController.text;
+
+                        DateTime? parsedDate;
+                        if (date.isNotEmpty) {
+                          parsedDate = DateTime.parse(date);
+                        }
+
+                        Expense newExpense = Expense(
+                          id: Expense.generateUniqueId(),
+                          totalAmount: calculateTotalAmount(productsData),
+                          products: createProductList(productsData),
+                          seller: seller.isNotEmpty ? seller : null,
+                          date: parsedDate,
+                        );
+
+                        // Mettre à jour les dépenses de l'utilisateur authentifié
+                        _databaseService.addExpense(newExpense);
+
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Success'),
+                              content: const Text(
+                                  'The expense has been added successfully !'),
+                              actions: [
+                                Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Ferme la fenêtre contextuelle
+                                      _resetForm(); // Réinitialise le formulaire
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     },
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text('Add'),
-                ),
-              ),
-                        ]),
-            ),
-          ],
-        ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text('Add'),
+                    ),
+                  ),
+                ]),
+          ),
+        ],
+      ),
     );
   }
 

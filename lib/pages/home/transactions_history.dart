@@ -3,9 +3,7 @@ import 'package:fin_track_ocr/models/product.dart';
 import 'package:fin_track_ocr/pages/edit_expense/edit_expense.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -118,7 +116,34 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                 ),
                 IconButton(
                   onPressed: () {
-                    // Action lorsque l'icône est cliquée
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Select Filter Option'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                title: const Text('Filter Option 1'),
+                                onTap: () {
+                                  // Handle filter option 1
+                                  Navigator.pop(context); // Close the dialog
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('Filter Option 2'),
+                                onTap: () {
+                                  // Handle filter option 2
+                                  Navigator.pop(context); // Close the dialog
+                                },
+                              ),
+                              // Add more ListTile widgets for additional filter options
+                            ],
+                          ),
+                        );
+                      },
+                    );
                   },
                   icon: const Icon(Icons.filter_list),
                 ),
@@ -164,7 +189,7 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                       final expense =
                                           expenses[expenses.length - 1 - index];
                                       final List<Product> productsToShow =
-                                          expense.products.take(3).toList();
+                                          expense.products.take(4).toList();
                                   
                                       return Card(
                                         elevation: 4.0,
@@ -177,6 +202,7 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   const Icon(
                                                     Icons.monetization_on,
@@ -191,6 +217,7 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                   ),
                                                 ],
                                               ),
+                                              const SizedBox(height: 20.0,),
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -266,6 +293,22 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                                 .name),
                                                           ],
                                                         )
+                                                      else if (productsToShow
+                                                        .length ==
+                                                    3)
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          '${productsToShow[0].name}, '),
+                                                          Text(
+                                                          '${productsToShow[1].name}, '),
+                                                      Text(productsToShow[2]
+                                                          .name),
+                                                    ],
+                                                  )
                                                       else
                                                         Row(
                                                           crossAxisAlignment:
@@ -276,6 +319,8 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                                 '${productsToShow[0].name}, '),
                                                             Text(
                                                                 '${productsToShow[1].name}, '),
+                                                                Text(
+                                                          '${productsToShow[2].name}, '),
                                                             const Text('...'),
                                                           ],
                                                         ),
@@ -283,6 +328,7 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                   ),
                                                 ],
                                               ),
+                                              const SizedBox(height: 15.0,),
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.spaceEvenly,
@@ -342,15 +388,13 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                     highlightColor:
                                                         const Color.fromARGB(
                                                             255, 191, 10, 10),
-                                                    color: const Color.fromARGB(
-                                                        255, 191, 10, 10),
                                                     iconSize: 26.0,
                                                     onPressed: () {
                                                       _databaseService
                                                           .deleteExpense(expense.id);
                                                     },
                                                     icon: const Icon(
-                                                      Icons.cancel_outlined,
+                                                      Icons.delete,
                                                     ),
                                                   ),
                                                   IconButton(

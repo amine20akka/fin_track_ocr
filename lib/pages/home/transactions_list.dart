@@ -20,7 +20,6 @@ class TransactionsList extends StatefulWidget {
 class _TransactionsListState extends State<TransactionsList> {
   late final DatabaseService _databaseService;
 
-
   @override
   void initState() {
     super.initState();
@@ -31,7 +30,7 @@ class _TransactionsListState extends State<TransactionsList> {
   Widget build(BuildContext context) {
     return Expanded(
       child: StreamBuilder<List<Expense>>(
-        stream: _databaseService.userExpenses,
+        stream: _databaseService.getExpensesForCurrentMonth(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -42,6 +41,7 @@ class _TransactionsListState extends State<TransactionsList> {
             );
           } else {
             if (snapshot.hasError) {
+              print('Error: ${snapshot.error}');
               return Container();
             } else {
               final expenses = snapshot.data ?? [];
@@ -153,7 +153,8 @@ class _TransactionsListState extends State<TransactionsList> {
                                         expense.date != null
                                             ? DateFormat('MMMM dd, yyyy')
                                                 .format(expense.date!)
-                                            : 'Unknown',
+                                            : DateFormat('MMMM dd, yyyy')
+                                                .format(DateTime.now()),
                                         style: GoogleFonts.poly(
                                           fontSize: 16.0,
                                         ),
@@ -230,22 +231,32 @@ class _TransactionsListState extends State<TransactionsList> {
                                       Navigator.push(
                                         context,
                                         PageRouteBuilder(
-                                          transitionDuration: const Duration(milliseconds: 500),
-                                          transitionsBuilder:
-                                              (context, animation, secondaryAnimation, child) {
+                                          transitionDuration:
+                                              const Duration(milliseconds: 500),
+                                          transitionsBuilder: (context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child) {
                                             const begin = Offset(1.0, 0.0);
                                             const end = Offset.zero;
                                             const curve = Curves.ease;
-                                            var tween = Tween(begin: begin, end: end)
-                                                .chain(CurveTween(curve: curve));
-                                            var offsetAnimation = animation.drive(tween);
+                                            var tween = Tween(
+                                                    begin: begin, end: end)
+                                                .chain(
+                                                    CurveTween(curve: curve));
+                                            var offsetAnimation =
+                                                animation.drive(tween);
                                             return SlideTransition(
                                               position: offsetAnimation,
                                               child: child,
                                             );
                                           },
-                                          pageBuilder: (context, animation, secondaryAnimation) {
-                                            return EditExpense(expense: expense, uid: widget.uid,);
+                                          pageBuilder: (context, animation,
+                                              secondaryAnimation) {
+                                            return EditExpense(
+                                              expense: expense,
+                                              uid: widget.uid,
+                                            );
                                           },
                                         ),
                                       );
@@ -254,19 +265,17 @@ class _TransactionsListState extends State<TransactionsList> {
                                       Icons.edit,
                                     ),
                                   ),
-
                                   IconButton(
                                     tooltip: 'Remove',
                                     highlightColor:
                                         const Color.fromARGB(255, 191, 10, 10),
-                                    color:
-                                        const Color.fromARGB(255, 191, 10, 10),
                                     iconSize: 26.0,
                                     onPressed: () {
-                                      _databaseService.deleteExpense(expense.id);
+                                      _databaseService
+                                          .deleteExpense(expense.id);
                                     },
                                     icon: const Icon(
-                                      Icons.cancel_outlined,
+                                      Icons.delete,
                                     ),
                                   ),
                                   IconButton(
@@ -331,8 +340,10 @@ class _TransactionsListState extends State<TransactionsList> {
                                                       return DataRow(cells: [
                                                         DataCell(
                                                             Text(product.name)),
-                                                        DataCell(Text(
-                                                            product.price.toStringAsFixed(2))),
+                                                        DataCell(Text(product
+                                                            .price
+                                                            .toStringAsFixed(
+                                                                2))),
                                                         DataCell(Text(product
                                                             .quantity
                                                             .toString())),
@@ -358,7 +369,8 @@ class _TransactionsListState extends State<TransactionsList> {
                                                               ),
                                                             ),
                                                             Text(
-                                                              expense.date != null
+                                                              expense.date !=
+                                                                      null
                                                                   ? DateFormat(
                                                                           'MMMM dd, yyyy')
                                                                       .format(expense

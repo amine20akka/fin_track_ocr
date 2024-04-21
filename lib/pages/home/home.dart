@@ -11,6 +11,7 @@ import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   final String uid;
@@ -172,12 +173,23 @@ class _HomeState extends State<Home> {
                   const SizedBox(width: 10.0,),
                   const Icon(Icons.access_time_filled, size: 22.0,),
                   const SizedBox(width: 8.0,),
-                  Text(
-                    'Recent Transactions',
-                    style: GoogleFonts.poly(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        DateFormat('MMMM').format(DateTime.now()),
+                        style: GoogleFonts.poly(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                      Text(
+                        ' Transactions',
+                        style: GoogleFonts.poly(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(width: 10.0,),
                   Expanded(
