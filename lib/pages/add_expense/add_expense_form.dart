@@ -38,8 +38,7 @@ class ProductListTileState extends State<ProductListTile> {
             controller: widget.productController,
             decoration: expenseInputDecoration
                 .copyWith(labelText: 'Name of product')
-                .copyWith(
-                    prefixIcon: const Icon(Icons.production_quantity_limits)),
+                .copyWith(prefixIcon: const Icon(Icons.shopify)),
           ),
           TextFormField(
             validator: (value) =>
@@ -57,31 +56,37 @@ class ProductListTileState extends State<ProductListTile> {
             height: 1.5,
           ),
           Container(
-              width: 310.0,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                color: Color.fromARGB(255, 196, 208, 225),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(width: 13.0,),
-                  const Icon(Icons.shopify),
-                  const SizedBox(width: 12.0,),
-                  const Text('Quantity:'),
-                  const SizedBox(width: 30.0,),
-                  IconButton(
-                    onPressed: () => _decrementQuantity(),
-                    icon: const Icon(Icons.remove),
-                  ),
-                  Text(widget.quantityController.text),
-                  IconButton(
-                    onPressed: () => _incrementQuantity(),
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              ),
+            width: 310.0,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              color: Color.fromARGB(255, 196, 208, 225),
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  width: 13.0,
+                ),
+                const Icon(Icons.production_quantity_limits),
+                const SizedBox(
+                  width: 12.0,
+                ),
+                const Text('Quantity:'),
+                const SizedBox(
+                  width: 30.0,
+                ),
+                IconButton(
+                  onPressed: () => _decrementQuantity(),
+                  icon: const Icon(Icons.remove),
+                ),
+                Text(widget.quantityController.text),
+                IconButton(
+                  onPressed: () => _incrementQuantity(),
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(
             height: 50.0,
           ),
@@ -124,6 +129,7 @@ class AddExpenseForm extends StatefulWidget {
 class AddExpenseFormState extends State<AddExpenseForm> {
   late final DatabaseService _databaseService;
   final _formKey = GlobalKey<FormState>();
+  late final DateTime? picked;
 
   @override
   void initState() {
@@ -276,7 +282,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                             prefixIcon: Icon(Icons.date_range),
                           ),
                           onTap: () async {
-                            final DateTime? picked = await showDatePicker(
+                              picked = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2015, 8),
@@ -285,7 +291,7 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                             if (picked != null) {
                               setState(() {
                                 _dateController.text =
-                                    DateFormat('MMMM dd, yyyy').format(picked);
+                                    DateFormat('MMMM dd, yyyy').format(picked!);
                               });
                             }
                           },
@@ -351,12 +357,12 @@ class AddExpenseFormState extends State<AddExpenseForm> {
                           });
                         }
 
-                        String date = _dateController.text;
                         String seller = _sellerController.text;
 
                         DateTime? parsedDate;
-                        if (date.isNotEmpty) {
-                          parsedDate = DateTime.parse(date);
+                        if (_dateController.text.isNotEmpty) {
+                          parsedDate = DateTime.parse(
+                              DateFormat('yyyy-MM-dd').format(picked!));
                         }
 
                         Expense newExpense = Expense(

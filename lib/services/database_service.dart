@@ -164,4 +164,28 @@ class DatabaseService {
   }
 }
 
+  List<Expense> getExpensesByProductNameOrSeller(
+      List<Expense> expenses, String query) {
+    final lowerCaseQuery = query.toLowerCase();
+    List<Expense> filteredExpenses = expenses.where((expense) {
+      // Check if any product name contains the query
+      final productNameLowerCase = expense.products
+          .map((product) => product.name.toLowerCase())
+          .toList();
+      if (productNameLowerCase
+          .any((productName) => productName.contains(lowerCaseQuery))) {
+        return true;
+      }
+      // Check if the seller name contains the query
+      final sellerNameLowerCase =
+          expense.seller?.toLowerCase() ?? ''; // Handle null seller
+      if (sellerNameLowerCase.contains(lowerCaseQuery)) {
+        return true;
+      }
+      return false;
+    }).toList();
+    return filteredExpenses;
+  }
+
+
 }
