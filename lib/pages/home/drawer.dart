@@ -75,7 +75,6 @@ class _MyDrawerState extends State<MyDrawer> {
                         leading: const Icon(Icons.person),
                         title: const Text('My profile', style: TextStyle(fontWeight: FontWeight.bold),),
                         onTap: () {
-                          Navigator.pop(context);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

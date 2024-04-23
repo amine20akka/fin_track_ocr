@@ -71,7 +71,7 @@ class ProductListTileState extends State<ProductListTile> {
                 const SizedBox(
                   width: 12.0,
                 ),
-                const Text('Quantity:'),
+                Text('Quantity', style: TextStyle(color: Colors.grey[800]),),
                 const SizedBox(
                   width: 30.0,
                 ),

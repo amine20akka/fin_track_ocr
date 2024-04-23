@@ -30,7 +30,7 @@ class _RegisterState extends State<Register> {
   late String firstName;
   late String lastName;
   late String email;
-  late String password;
+  String password = '';
   String error = '';
   String? imageUrl;
   double budget = 0;
@@ -146,14 +146,27 @@ class _RegisterState extends State<Register> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   TextFormField(
+                                    keyboardType: TextInputType.name,
                                     decoration: textInputDecoration
                                         .copyWith(hintText: 'First Name')
                                         .copyWith(
                                             prefixIcon:
                                                 const Icon(Icons.person_2_outlined)),
-                                    validator: (value) => value!.isEmpty
-                                        ? 'Please enter your first name'
-                                        : null,
+                                    validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your first name';
+                                    }
+                                    // Vérifie si le nom contient uniquement des lettres alphabétiques
+                                    if (!RegExp(r'^[a-zA-ZÀ-ÖØ-öø-ÿ]+$')
+                                        .hasMatch(value)) {
+                                      return 'Please enter only alphabetical characters';
+                                    }
+                                    // Vérifie si la longueur du nom est d'au moins 2 caractères
+                                    if (value.length < 2) {
+                                      return 'First name must be at least 2 characters';
+                                    }
+                                    return null; // Retourne null si la saisie est valide
+                                  },
                                     onChanged: (val) {
                                       setState(() {
                                         firstName = val;
@@ -162,14 +175,27 @@ class _RegisterState extends State<Register> {
                                   ),
                                   const SizedBox(height: 20.0),
                                   TextFormField(
+                                    keyboardType: TextInputType.name,
                                     decoration: textInputDecoration
                                         .copyWith(hintText: 'Last Name')
                                         .copyWith(
                                             prefixIcon:
                                                 const Icon(Icons.person_2_outlined)),
-                                    validator: (value) => value!.isEmpty
-                                        ? 'Please enter your last name'
-                                        : null,
+                                    validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your last name';
+                                    }
+                                    // Vérifie si le nom contient uniquement des lettres alphabétiques
+                                    if (!RegExp(r'^[a-zA-ZÀ-ÖØ-öø-ÿ]+$')
+                                        .hasMatch(value)) {
+                                      return 'Please enter only alphabetical characters';
+                                    }
+                                    // Vérifie si la longueur du nom est d'au moins 2 caractères
+                                    if (value.length < 2) {
+                                      return 'Last name must be at least 2 characters';
+                                    }
+                                    return null; // Retourne null si la saisie est valide
+                                  },
                                     onChanged: (val) {
                                       setState(() {
                                         lastName = val;
@@ -178,14 +204,20 @@ class _RegisterState extends State<Register> {
                                   ),
                                   const SizedBox(height: 20.0),
                                   TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
                                     decoration: textInputDecoration
                                         .copyWith(hintText: 'Email')
                                         .copyWith(
                                             prefixIcon:
                                                 const Icon(Icons.email_outlined)),
-                                    validator: (value) => value!.isEmpty
-                                        ? 'Please enter your email'
-                                        : null,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter an email';
+                                      } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                        return 'Please enter a valid email';
+                                      }
+                                      return null;
+                                    },
                                     onChanged: (val) {
                                       setState(() {
                                         email = val;
@@ -212,9 +244,20 @@ class _RegisterState extends State<Register> {
                                             },
                                           ),
                                         ),
-                                    validator: (value) => value!.isEmpty
-                                        ? 'Please enter your password'
-                                        : null,
+                                    validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your password';
+                                    }
+                                    if (value.length < 6) {
+                                      return 'Password must be at least 6 characters long';
+                                    }
+                                    if (!RegExp(
+                                            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)')
+                                        .hasMatch(value)) {
+                                      return 'Password must contain at least one uppercase letter, one lowercase letter, and one digit';
+                                    }
+                                    return null;
+                                  },
                                     obscureText: passwordVisible,
                                     onChanged: (val) {
                                       password = val;
@@ -222,36 +265,37 @@ class _RegisterState extends State<Register> {
                                   ),
                                   const SizedBox(height: 20.0),
                                   TextFormField(
-                                    decoration: textInputDecoration
-                                        .copyWith(hintText: 'Confirm Password')
-                                        .copyWith(
-                                          suffixIcon: IconButton(
-                                            icon: Icon(passwordVisible
-                                                ? Icons.visibility_off
-                                                : Icons.visibility),
-                                            onPressed: () {
-                                              setState(
-                                                () {
-                                                  passwordVisible = !passwordVisible;
-                                                },
-                                              );
-                                            },
-                                          ),
-                                        )
-                                        .copyWith(
-                                            prefixIcon:
-                                                const Icon(Icons.check_box_outlined)),
-                                    validator: (value) {
-                                      if (value != password) {
-                                        _passwordConfirmed = false;
-                                        return 'Please re-enter your password';
-                                      } else {
-                                        _passwordConfirmed = true;
-                                        return null;
-                                      }
-                                    },
-                                    obscureText: passwordVisible,
-                                  ),
+                                  decoration: textInputDecoration
+                                      .copyWith(hintText: 'Confirm Password')
+                                      .copyWith(
+                                        suffixIcon: IconButton(
+                                          icon: Icon(passwordVisible
+                                              ? Icons.visibility_off
+                                              : Icons.visibility),
+                                          onPressed: () {
+                                            setState(
+                                              () {
+                                                passwordVisible =
+                                                    !passwordVisible;
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      )
+                                      .copyWith(
+                                          prefixIcon: const Icon(
+                                              Icons.check_box_outlined)),
+                                  validator: (value) {
+                                    if (value != password || value!.isEmpty) {
+                                      _passwordConfirmed = false;
+                                      return 'Please re-enter your password';
+                                    } else {
+                                      _passwordConfirmed = true;
+                                      return null;
+                                    }
+                                  },
+                                  obscureText: passwordVisible,
+                                ),
                                   const SizedBox(height: 20.0),
                                   TextFormField(
                                     decoration: textInputDecoration
@@ -262,6 +306,16 @@ class _RegisterState extends State<Register> {
                                         .copyWith(
                                             suffixText: 'TND'),
                                     keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please set your monthly budget';
+                                    } else if (double.tryParse(value) == null) {
+                                      return 'Please enter a valid number';
+                                    } else if (double.parse(value) <= 0) {
+                                      return 'Please enter a budget greater than zero';
+                                    }
+                                    return null; // Retourne null si la validation réussit
+                                  },
                                     onChanged: (value) {
                                       setState(() {
                                         budget = double.tryParse(value) ??

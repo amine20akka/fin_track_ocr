@@ -65,10 +65,17 @@ class _SignInState extends State<SignIn> {
                                   children: <Widget>[
                                     const SizedBox(height: 20.0),
                                     TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
                                       decoration:
                                           textInputDecoration.copyWith(hintText: 'Email'),
-                                      validator: (value) =>
-                                          value!.isEmpty ? 'Enter an email' : null,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Please enter an email';
+                                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                          return 'Please enter a valid email';
+                                        }
+                                        return null;
+                                      },
                                       onChanged: (val) {
                                         setState(() {
                                           email = val;

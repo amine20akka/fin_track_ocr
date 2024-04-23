@@ -416,16 +416,80 @@ class _TransactionsListState extends State<TransactionsList> {
                                               ),
                                             ),
                                             actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text(
-                                                  'Close',
-                                                  style: TextStyle(
-                                                    color: Colors.blue[900],
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                      Navigator.push(
+                                                        context,
+                                                        PageRouteBuilder(
+                                                          transitionDuration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      500),
+                                                          transitionsBuilder:
+                                                              (context,
+                                                                  animation,
+                                                                  secondaryAnimation,
+                                                                  child) {
+                                                            const begin =
+                                                                Offset(
+                                                                    1.0, 0.0);
+                                                            const end =
+                                                                Offset.zero;
+                                                            const curve =
+                                                                Curves.ease;
+                                                            var tween = Tween(
+                                                                    begin:
+                                                                        begin,
+                                                                    end: end)
+                                                                .chain(CurveTween(
+                                                                    curve:
+                                                                        curve));
+                                                            var offsetAnimation =
+                                                                animation.drive(
+                                                                    tween);
+                                                            return SlideTransition(
+                                                              position:
+                                                                  offsetAnimation,
+                                                              child: child,
+                                                            );
+                                                          },
+                                                          pageBuilder: (context,
+                                                              animation,
+                                                              secondaryAnimation) {
+                                                            return EditExpense(
+                                                              expense: expense,
+                                                              uid: widget.uid,
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      'Update',
+                                                      style: TextStyle(
+                                                        color: Colors.blue[900],
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text(
+                                                      'Close',
+                                                      style: TextStyle(
+                                                        color: Colors.blue[900],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           );

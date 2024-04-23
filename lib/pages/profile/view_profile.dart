@@ -71,24 +71,39 @@ class _ViewProfileState extends State<ViewProfile> {
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'My profile',
-                                style: GoogleFonts.poly(
-                                  color: Colors.grey[200],
-                                  fontSize: 28.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 20.0,
-                              ),
-                              Icon(
-                                color: Colors.grey[200],
-                                Icons.person,
-                              ),
-                            ]),
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IconButton(
+                            color: Colors.grey[200],
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          const SizedBox(
+                            width: 55.0,
+                          ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'My profile',
+                                    style: GoogleFonts.poly(
+                                      color: Colors.grey[200],
+                                      fontSize: 28.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 20.0,
+                                  ),
+                                  Icon(
+                                    color: Colors.grey[200],
+                                    Icons.person,
+                                  ),
+                                ]),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -173,9 +188,21 @@ class _ViewProfileState extends State<ViewProfile> {
                                           .copyWith(
                                               prefixIcon:
                                                   const Icon(Icons.person_2_outlined)),
-                                      validator: (value) => value!.isEmpty
-                                          ? 'Please enter your first name'
-                                          : null,
+                                      validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter your first name';
+                                      }
+                                      // Vérifie si le nom contient uniquement des lettres alphabétiques
+                                      if (!RegExp(r'^[a-zA-ZÀ-ÖØ-öø-ÿ]+$')
+                                          .hasMatch(value)) {
+                                        return 'Please enter only alphabetical characters';
+                                      }
+                                      // Vérifie si la longueur du nom est d'au moins 2 caractères
+                                      if (value.length < 2) {
+                                        return 'First name must be at least 2 characters';
+                                      }
+                                      return null; // Retourne null si la saisie est valide
+                                    },
                                       onChanged: (val) {
                                         firstName = val;
                                       },
@@ -188,30 +215,50 @@ class _ViewProfileState extends State<ViewProfile> {
                                           .copyWith(
                                               prefixIcon:
                                                   const Icon(Icons.person_2_outlined)),
-                                      validator: (value) => value!.isEmpty
-                                          ? 'Please enter your last name'
-                                          : null,
+                                      validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter your last name';
+                                      }
+                                      // Vérifie si le nom contient uniquement des lettres alphabétiques
+                                      if (!RegExp(r'^[a-zA-ZÀ-ÖØ-öø-ÿ]+$')
+                                          .hasMatch(value)) {
+                                        return 'Please enter only alphabetical characters';
+                                      }
+                                      // Vérifie si la longueur du nom est d'au moins 2 caractères
+                                      if (value.length < 2) {
+                                        return 'Last name must be at least 2 characters';
+                                      }
+                                      return null; // Retourne null si la saisie est valide
+                                    },
                                       onChanged: (val) {
                                         lastName = val;
                                       },
                                     ),
                                     const SizedBox(height: 20.0),
                                     TextFormField(
-                                      initialValue: budget.toStringAsFixed(2),
-                                      keyboardType: TextInputType.number,
-                                      decoration: textInputDecoration
-                                          .copyWith(hintText: 'Monthly Budget')
-                                          .copyWith(suffixText: 'TND')
-                                          .copyWith(
-                                              prefixIcon: const Icon(
-                                                  Icons.monetization_on_outlined)),
-                                      validator: (value) => value!.isEmpty
-                                          ? 'Please set your monthly budget'
-                                          : null,
-                                      onChanged: (val) {
-                                        budget = double.tryParse(val) ?? 0;
-                                      },
-                                    ),
+                                    initialValue: budget.toStringAsFixed(3),
+                                    keyboardType: TextInputType.number,
+                                    decoration: textInputDecoration
+                                        .copyWith(hintText: 'Monthly Budget')
+                                        .copyWith(suffixText: 'TND')
+                                        .copyWith(
+                                            prefixIcon: const Icon(Icons
+                                                .monetization_on_outlined)),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please set your monthly budget';
+                                      } else if (double.tryParse(value) ==
+                                          null) {
+                                        return 'Please enter a valid number';
+                                      } else if (double.parse(value) <= 0) {
+                                        return 'Please enter a budget greater than zero';
+                                      }
+                                      return null; // Retourne null si la validation réussit
+                                    },
+                                    onChanged: (val) {
+                                      budget = double.tryParse(val) ?? 0;
+                                    },
+                                  ),
                                     const SizedBox(height: 60.0),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -248,7 +295,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                                   return AlertDialog(
                                                     title: const Text('Success'),
                                                     content: const Text(
-                                                        'New user data saved successfully!'),
+                                                        'Your details saved successfully!'),
                                                     actions: [
                                                       TextButton(
                                                         onPressed: () {
