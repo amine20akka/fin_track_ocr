@@ -41,7 +41,6 @@ class _TransactionsListState extends State<TransactionsList> {
             );
           } else {
             if (snapshot.hasError) {
-              print('Error: ${snapshot.error}');
               return Container();
             } else {
               final expenses = snapshot.data ?? [];
@@ -271,8 +270,58 @@ class _TransactionsListState extends State<TransactionsList> {
                                         const Color.fromARGB(255, 191, 10, 10),
                                     iconSize: 26.0,
                                     onPressed: () {
-                                      _databaseService
-                                          .deleteExpense(expense.id);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                              "Confirm Delete",
+                                              style:
+                                                  TextStyle(color: Color.fromARGB(255, 215, 49, 37)),
+                                            ),
+                                            content: const Text(
+                                              "Are you sure you want to delete this transaction?",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    249, 238, 232, 232),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                      color: Colors.blue[900]),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text(
+                                                  "Delete",
+                                                  style: TextStyle(
+                                                      color: Color.fromARGB(
+                                                          255, 215, 49, 37)),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _databaseService
+                                                        .deleteExpense(
+                                                            expense.id);
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                     icon: const Icon(
                                       Icons.delete,

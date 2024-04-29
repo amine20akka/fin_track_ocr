@@ -4,9 +4,7 @@ import 'package:fin_track_ocr/models/user.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/input_decoration_auth.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 

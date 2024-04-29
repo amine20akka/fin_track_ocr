@@ -1,9 +1,7 @@
 import 'package:fin_track_ocr/pages/splash_screen/splash_screen.dart';
 import 'package:fin_track_ocr/services/auth_service.dart';
 import 'package:fin_track_ocr/shared/input_decoration_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;

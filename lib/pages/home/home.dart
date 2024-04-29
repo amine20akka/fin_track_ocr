@@ -43,8 +43,21 @@ class _HomeState extends State<Home> {
                     String? imageUrl = snapshot.data!.profileImageUrl;
                     double totalAmountAllExpenses = 0;
                     List<Expense> expenses = snapshot.data!.expenses;
+
                     if (expenses.isNotEmpty) {
-                      for (Expense exp in expenses) {
+                      // Récupérer la date actuelle
+                      DateTime now = DateTime.now();
+
+                      // Filtrer les dépenses pour n'inclure que celles du mois actuel
+                      List<Expense> currentMonthExpenses =
+                          expenses.where((expense) {
+                        // Comparer la date de la dépense avec la date actuelle
+                        return expense.date!.month == now.month &&
+                            expense.date!.year == now.year;
+                      }).toList();
+
+                      // Calculer le total des dépenses du mois actuel
+                      for (Expense exp in currentMonthExpenses) {
                         totalAmountAllExpenses += exp.totalAmount;
                       }
                     }
