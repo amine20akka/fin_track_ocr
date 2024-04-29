@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:fin_track_ocr/models/expense.dart';
 import 'package:fin_track_ocr/models/product.dart';
+import 'package:fin_track_ocr/pages/add_expense/add_expense_form.dart';
 import 'package:fin_track_ocr/pages/edit_expense/edit_expense.dart';
 import 'package:fin_track_ocr/services/database_service.dart';
 import 'package:fin_track_ocr/shared/linear_gradient.dart';
@@ -426,12 +427,62 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                const SizedBox(height: 80.0,),
                                 Text(
                                   'No Transactions yet !',
                                   style: GoogleFonts.poly(
                                     fontSize: 24.0,
                                   ),
                                 ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            transitionDuration: const Duration(
+                                                milliseconds: 500),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              const begin = Offset(1.0, 0.0);
+                                              const end = Offset.zero;
+                                              const curve = Curves.ease;
+                                              var tween = Tween(
+                                                      begin: begin, end: end)
+                                                  .chain(
+                                                      CurveTween(curve: curve));
+                                              var offsetAnimation =
+                                                  animation.drive(tween);
+                                              return SlideTransition(
+                                                position: offsetAnimation,
+                                                child: child,
+                                              );
+                                            },
+                                            pageBuilder: (context, animation,
+                                                secondaryAnimation) {
+                                              return AddExpenseForm(
+                                                uid: widget.uid,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        'Add one here ...',
+                                        style: TextStyle(
+                                            fontSize: 20.0,
+                                            color: Colors.blue[900],
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                    Icon(Icons.receipt_long_outlined,
+                                        color: Colors.blue[900]),
+                                  ],
+                                )
                               ]);
                         } else {
                           return Padding(
@@ -650,8 +701,80 @@ class _TransactionsHistoryState extends State<TransactionsHistory> {
                                                       255, 191, 10, 10),
                                               iconSize: 26.0,
                                               onPressed: () {
-                                                _databaseService
-                                                    .deleteExpense(expense.id);
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                        "Confirm Delete",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    215,
+                                                                    49,
+                                                                    37)),
+                                                      ),
+                                                      content: const Text(
+                                                        "Are you sure you want to delete this transaction?",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      backgroundColor:
+                                                          const Color.fromARGB(
+                                                              249,
+                                                              238,
+                                                              232,
+                                                              232),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          child: Text(
+                                                            "Cancel",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .blue[900]),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                        TextButton(
+                                                          child: const Text(
+                                                            "Delete",
+                                                            style: TextStyle(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        215,
+                                                                        49,
+                                                                        37)),
+                                                          ),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              _databaseService
+                                                                  .deleteExpense(
+                                                                      expense
+                                                                          .id);
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            });
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
                                               },
                                               icon: const Icon(
                                                 Icons.delete,
